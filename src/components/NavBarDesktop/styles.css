@@ -1,0 +1,140 @@
+.circle-one-dsktp,
+.circle-two-dsktp,
+.circle-three-dsktp,
+.circle-four-dsktp {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  background: black;
+  filter: blur(10px);
+  margin: 10px 0px;
+  position: relative;
+}
+
+.circle-one-s2-dsktp,
+.circle-two-s2-dsktp,
+.circle-three-s2-dsktp,
+.circle-four-s2-dsktp {
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background: black;
+  filter: blur(13px);
+  position: absolute;
+}
+
+.circle-one-s2-dsktp {
+  top: 90px;
+}
+
+.circle-two-s2-dsktp {
+  top: 140px;
+}
+
+.circle-three-s2-dsktp {
+  top: 190px;
+}
+
+.icon-dsktp {
+  width: 50%;
+  height: 50%;
+}
+
+.icon-wrapper-1-dsktp,
+.icon-wrapper-2-dsktp,
+.icon-wrapper-3-dsktp,
+.icon-wrapper-4-dsktp {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.icon-wrapper-1-dsktp {
+  top: 76px;
+}
+
+.icon-wrapper-2-dsktp {
+  top: 125px;
+}
+
+.icon-wrapper-3-dsktp {
+  top: 175px;
+}
+
+.icon-wrapper-4-dsktp {
+  top: 224px;
+}
+
+.circle-select-dsktp {
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: inline-block;
+  background: black;
+  filter: blur(10px);
+  margin: 10px 0px;
+  position: absolute;
+  display: block;
+  top: 42px;
+}
+
+.stage-dsktp {
+  filter: contrast(50);
+  /* background: transparent; */
+  position: relative;
+  width: 125px;
+  height: 300px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.stage-overlay {
+  position: absolute;
+  border-radius: 25px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7); /* Example: Blue background with transparency */
+  z-index: 0; /* Ensure it sits behind the blobs and icons */
+}
+
+.icon-label {
+  position: absolute;
+  left: 40px; /* Adjust to position the text to the right of the icon */
+  opacity: 0; /* Hide the text by default */
+  white-space: nowrap; /* Prevent text from wrapping */
+  color: white;
+  font-size: 10px;
+  transition: opacity 0.3s ease; /* Smooth transition for visibility */
+}
+
+/* Show the text label on hover */
+.icon-wrapper-1-dsktp:hover .icon-label,
+.icon-wrapper-2-dsktp:hover .icon-label,
+.icon-wrapper-3-dsktp:hover .icon-label,
+.icon-wrapper-4-dsktp:hover .icon-label {
+  opacity: 1; /* Make the text visible */
+}
+
+.icon-wrapper-1-dsktp.active:hover .icon-label,
+.icon-wrapper-2-dsktp.active:hover .icon-label,
+.icon-wrapper-3-dsktp.active:hover .icon-label,
+.icon-wrapper-4-dsktp.active:hover .icon-label {
+  opacity: 0; /* Keep the text hidden */
+}

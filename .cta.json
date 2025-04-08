@@ -1,0 +1,13 @@
+{
+  "framework": "react",
+  "projectName": "my-portfolio-2025",
+  "typescript": true,
+  "tailwind": true,
+  "packageManager": "pnpm",
+  "toolchain": "eslint+prettier",
+  "mode": "file-router",
+  "git": true,
+  "variableValues": {},
+  "version": 1,
+  "existingAddOns": []
+}
