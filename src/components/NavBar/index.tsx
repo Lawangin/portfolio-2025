@@ -39,6 +39,30 @@ const NavBar = ({ className }: INavProps) => {
     }
 
     const handleClick = (iconIndex: number, backwards?: boolean) => {
+        switch (iconIndex) {
+            case 1.5:
+                setPageTitle('About Me Part 1');
+                break;
+            case 2:
+                if (backwards) {
+                    setPageTitle('About Me Part 2');
+                } else {
+                    setPageTitle('About Me Part 1');
+                }
+                break;
+            case 2.5:
+                setPageTitle('About Me Part 2');
+                break;
+            case 3:
+                setPageTitle("Projects");
+                break;
+            case 4:
+                setPageTitle("Contact Me");
+                break;
+            default:
+                setPageTitle("Home")
+        }
+        
         const normalizedIconIndex = backwards ? Math.round(iconIndex) : Math.floor(iconIndex);
         const normalizedActiveIcon = backwards ? Math.round(activeIcon) : Math.floor(activeIcon)
 
@@ -59,19 +83,7 @@ const NavBar = ({ className }: INavProps) => {
 
 
         setPageIndex(iconIndex)
-        switch (iconIndex) {
-            case 2:
-                setPageTitle('About Me');
-                break;
-            case 3:
-                setPageTitle("Projects");
-                break;
-            case 4:
-                setPageTitle("Contact Me");
-                break;
-            default:
-                setPageTitle("Home")
-        }
+
     };
 
     useEffect(() => {
