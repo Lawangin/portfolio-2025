@@ -2,9 +2,13 @@ import './styles.css'
 import { useEffect, useRef, useState } from 'react';
 import { animate, createScope, Scope, createSpring, waapi } from 'animejs';
 import { RxHome, RxPerson, RxCode, RxEnvelopeClosed } from "react-icons/rx";
+import { usePageContext } from '@/context/PageContext/PageContext';
 
+interface INavProps {
+    className: string;
+}
 
-const NavBar = () => {
+const NavBar = ({ className }: INavProps) => {
     const root = useRef<HTMLDivElement | null>(null);
     const scope = useRef<Scope | null>(null);
     const circleActiveRef = useRef<HTMLDivElement | null>(null);
@@ -13,11 +17,15 @@ const NavBar = () => {
     const [activeIcon, setActiveIcon] = useState<number>(1);
     const [circleActiveLeft, setCircleActiveLeft] = useState<number>(0);
 
+    // Track touch positions
+    const touchStartY = useRef<number>(0);
+    const touchEndY = useRef<number>(0);
+
+    const { pageIndex, setPageIndex, setPageTitle } = usePageContext();
 
     const getActiveCirclePosition = () => {
         if (circleActiveRef.current) {
             const computedStyle = getComputedStyle(circleActiveRef.current);
-            console.log(parseFloat(computedStyle.left))
             return parseFloat(computedStyle.left) ?? 0;
         }
     }
@@ -29,6 +37,42 @@ const NavBar = () => {
         }
         return 0;
     }
+
+    const handleClick = (iconIndex: number, backwards?: boolean) => {
+        const normalizedIconIndex = backwards ? Math.round(iconIndex) : Math.floor(iconIndex);
+        const normalizedActiveIcon = backwards ? Math.round(activeIcon) : Math.floor(activeIcon)
+
+        if (iconIndex === 2.5 || iconIndex === 1.5) {
+            setActiveIcon(iconIndex);
+            setPageIndex(iconIndex)
+            return;
+        }
+
+        if (activeIcon !== iconIndex) {
+            scope?.current?.methods.animateInactive(`.circle-${normalizedActiveIcon}`); // Use floored value for the current active icon
+        }
+        setActiveIcon(iconIndex); // Update the state with the exact value
+
+        // Use flooredIconIndex for animations
+        scope?.current?.methods.animateActiveBlob(normalizedIconIndex, normalizedIconIndex === normalizedActiveIcon);
+        scope?.current?.methods.animateActive(`.circle-${normalizedIconIndex}`);
+
+
+        setPageIndex(iconIndex)
+        switch (iconIndex) {
+            case 2:
+                setPageTitle('About Me');
+                break;
+            case 3:
+                setPageTitle("Projects");
+                break;
+            case 4:
+                setPageTitle("Contact Me");
+                break;
+            default:
+                setPageTitle("Home")
+        }
+    };
 
     useEffect(() => {
         // Set the initial position of circle-active after the DOM is mounted
@@ -42,12 +86,12 @@ const NavBar = () => {
                 scale: 1.75
             })
 
-            animate('.circle-1', {
+            animate(`.circle-${pageIndex}`, {
                 width: '40px',
                 height: '40px'
             })
 
-            scope.add('animateActiveBlob', (iconIndex) => {
+            scope.add('animateActiveBlob', (iconIndex, indexSimilar) => {
                 const leftValue = circleActiveLeft + ((iconIndex - 1) * 70);
                 const currentActiveLeftValue = getActiveCirclePosition()!;
                 const scaleYKeyFrames = [1.75, 1.75, 1, 1.75]
@@ -66,7 +110,7 @@ const NavBar = () => {
                 const bubbleLeft = [`${currentActiveLeftValue + 70}px`, `${currentActiveLeftValue + 40}px`];
                 const bubbleRight = [`${currentActiveLeftValue - 30}px`, `${currentActiveLeftValue}px`];
 
-                animate('.bubble', {
+                !indexSimilar && animate('.bubble', {
                     left: leftValue < currentActiveLeftValue ? bubbleRight : bubbleLeft,
                     opacity: [0, 1, 0],
                     scale: [1, .5, .2],
@@ -96,38 +140,95 @@ const NavBar = () => {
     }, [circleActiveLeft]);
 
     useEffect(() => {
+        const backwards = true
+
         const handleWheel = (event: WheelEvent) => {
             if (event.deltaY > 0) {
                 // Scrolling down
                 if (activeIcon < 4) {
-                    handleClick(activeIcon + 1);
+                    if (activeIcon == 2) {
+                        handleClick(activeIcon + .5)
+                    } else {
+                        handleClick(Math.floor(activeIcon + 1));
+                    }
                 }
             } else if (event.deltaY < 0) {
                 // Scrolling up
                 if (activeIcon > 1) {
-                    handleClick(activeIcon - 1);
+                    if (activeIcon == 2) {
+                        handleClick(activeIcon - .5, backwards)
+                    } else {
+                        handleClick(Math.round(activeIcon - 1), backwards);
+                    }
+                }
+            }
+        };
+
+        const handleTouchStart = (event: TouchEvent) => {
+            touchStartY.current = event.touches[0].clientY; // Record the starting Y position
+        };
+
+        const handleTouchEnd = (event: TouchEvent) => {
+            touchEndY.current = event.changedTouches[0].clientY; // Record the ending Y position
+
+            if (touchStartY.current - touchEndY.current > 50) {
+                // Swiping up
+                if (activeIcon < 4) {
+                    if (activeIcon == 2) {
+                        handleClick(activeIcon + .5)
+                    } else {
+                        handleClick(Math.floor(activeIcon + 1));
+                    }
+                }
+            } else if (touchEndY.current - touchStartY.current > 50) {
+                // Swiping down
+                if (activeIcon > 1) {
+                    if (activeIcon == 2) {
+                        handleClick(activeIcon - .5, backwards)
+                    } else {
+                        handleClick(Math.round(activeIcon - 1), backwards);
+                    }
+                }
+            }
+        };
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+                // Down/Right arrow key pressed
+                if (activeIcon < 4) {
+                    if (activeIcon == 2) {
+                        handleClick(activeIcon + .5)
+                    } else {
+                        handleClick(Math.floor(activeIcon + 1));
+                    }
+                }
+            } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+                // Up/Left arrow key pressed
+                if (activeIcon > 1) {
+                    if (activeIcon == 2) {
+                        handleClick(activeIcon - .5, backwards)
+                    } else {
+                        handleClick(Math.round(activeIcon - 1), backwards);
+                    }
                 }
             }
         };
 
         window.addEventListener('wheel', handleWheel);
+        window.addEventListener('touchstart', handleTouchStart);
+        window.addEventListener('touchend', handleTouchEnd);
+        window.addEventListener('keydown', handleKeyDown);
 
         return () => {
             window.removeEventListener('wheel', handleWheel);
-        };
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchend', handleTouchEnd);
+            window.removeEventListener('keydown', handleKeyDown);
+        }
     }, [activeIcon]);
 
-    const handleClick = (iconIndex: number) => {
-        if (activeIcon !== iconIndex) {
-            scope?.current?.methods.animateInactive(`.circle-${activeIcon}`);
-        }
-        setActiveIcon(iconIndex);
-        scope?.current?.methods.animateActiveBlob(iconIndex);
-        scope?.current?.methods.animateActive(`.circle-${iconIndex}`);
-    };
-
     return (
-        <div ref={root} className='circle-container'>
+        <div ref={root} className={`circle-container  ${className}`}>
             <div className="bubble" />
             <div className="circle-active" ref={circleActiveRef}
                 style={{
@@ -136,7 +237,8 @@ const NavBar = () => {
             <div className={`circle-1 ${activeIcon === 1 ? 'active' : ''}`} ref={circleStartRef} onClick={() => handleClick(1)}>
                 <RxHome className='icon' />
             </div>
-            <div className={`circle-2 ${activeIcon === 2 ? 'active' : ''}`} onClick={() => handleClick(2)} >
+            <div className={`circle-2 ${(activeIcon >= 1.5 && activeIcon <= 2.5) ? 'active' : ''}`} 
+            onClick={() => handleClick(2)} >
                 <RxPerson className='icon' />
             </div>
             <div className={`circle-3 ${activeIcon === 3 ? 'active' : ''}`} onClick={() => handleClick(3)} >

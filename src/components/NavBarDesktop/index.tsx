@@ -1,102 +1,219 @@
 import { useEffect, useRef, useState } from 'react';
-import { animate, createScope, Scope } from 'animejs';
+import { animate, createScope, Scope, createSpring, waapi } from 'animejs';
 import { RxHome, RxPerson, RxCode, RxEnvelopeClosed } from "react-icons/rx";
-import './styles.css';
+import { usePageContext } from '@/context/PageContext/PageContext';
 
-const NavBarDesktop = () => {
+interface INavProps {
+    className: string;
+}
+
+const NavBarDesktop = ({ className }: INavProps) => {
     const root = useRef<HTMLDivElement | null>(null);
     const scope = useRef<Scope | null>(null);
+    const circleActiveRef = useRef<HTMLDivElement | null>(null);
+    const circleStartRef = useRef<HTMLDivElement | null>(null);
 
     const [activeIcon, setActiveIcon] = useState<number>(1);
+    const [circleActiveTop, setCircleActiveTop] = useState<number>(0);
+
+    // Track touch positions
+    const touchStartY = useRef<number>(0);
+    const touchEndY = useRef<number>(0);
+
+    const { pageIndex, setPageIndex, setPageTitle } = usePageContext();
+
+    const getActiveCirclePosition = () => {
+        if (circleActiveRef.current) {
+            const computedStyle = getComputedStyle(circleActiveRef.current);
+            return parseFloat(computedStyle.top) ?? 0;
+        }
+    }
+
+    const getFirstCirclePosition = () => {
+        if (circleStartRef.current) {
+            const rect = circleStartRef.current.getBoundingClientRect();
+            return rect.top;
+        }
+        return 0;
+    }
+
+    const handleClick = (iconIndex: number) => {
+        if (activeIcon !== iconIndex) {
+            scope?.current?.methods.animateInactive(`.circle-${activeIcon}`);
+        }
+        setActiveIcon(iconIndex);
+
+        scope?.current?.methods.animateActiveBlob(iconIndex, iconIndex === activeIcon);
+        scope?.current?.methods.animateActive(`.circle-${iconIndex}`);
+
+        setPageIndex(iconIndex)
+        switch (iconIndex) {
+            case 2:
+                setPageTitle('About Me');
+                break;
+            case 3:
+                setPageTitle("Projects");
+                break;
+            case 4:
+                setPageTitle("Contact Me");
+                break;
+            default:
+                setPageTitle("Home")
+        }
+    };
+
+    useEffect(() => {
+        // Set the initial position of circle-active after the DOM is mounted
+        const initialTop = getFirstCirclePosition();
+        setCircleActiveTop(initialTop - 20);
+    }, []);
 
     useEffect(() => {
         scope.current = createScope({ root: root as React.RefObject<HTMLElement | SVGElement> }).add(scope => {
-            animate('.icon-wrapper-1-dsktp', {
-                width: '40px',
-                height: '40px',
-                duration: 100
-            });
+            animate('.circle-active', {
+                scale: 2
+            })
 
-            scope.add('moveBlob', (transValue) => {
-                animate('.circle-select-dsktp', {
-                    top: `${transValue}px`,
-                    duration: 500,
+            animate(`.circle-${pageIndex}`, {
+                width: '50px',
+                height: '50px'
+            })
+
+            scope.add('animateActiveBlob', (iconIndex, indexSimilar) => {
+                const topValue = circleActiveTop + ((iconIndex - 1) * 70);
+                const currentActiveTopValue = getActiveCirclePosition()!;
+                const scaleYKeyFrames = [2, 1, 2, 2]
+                const scaleXKeyFrames = [2, 1, 1, 2]
+
+                const scaleY = topValue < currentActiveTopValue ? scaleYKeyFrames : scaleYKeyFrames.reverse();
+                const scaleX = topValue < currentActiveTopValue ? scaleXKeyFrames : scaleXKeyFrames.reverse();
+
+                waapi.animate('.circle-active', {
+                    top: `${topValue}px`,
+                    scaleY: scaleY,
+                    scaleX: scaleX,
+                    ease: createSpring({ stiffness: 70 }),
                 });
-            });
+
+                const bubbleLeft = [`${currentActiveTopValue + 70}px`, `${currentActiveTopValue + 40}px`];
+                const bubbleRight = [`${currentActiveTopValue - 30}px`, `${currentActiveTopValue}px`];
+
+                !indexSimilar && animate('.bubble', {
+                    top: topValue < currentActiveTopValue ? bubbleRight : bubbleLeft,
+                    opacity: [0, 1, 0],
+                    scale: [1, .5, .2],
+                    delay: 200,
+                    duration: 600
+                })
+            })
 
             scope.add('animateActive', (selector: string) => {
                 animate(selector, {
-                    width: '40px',
-                    height: '40px',
-                    delay: 200,
+                    width: '50px',
+                    height: '50px',
+                    ease: 'outQuad',
+                    delay: 400,
+                    duration: 400
                 });
             });
 
             scope.add('animateInactive', (selector: string) => {
                 animate(selector, {
-                    width: '20px',
-                    height: '20px',
+                    width: '30px',
+                    height: '30px',
                 });
             });
         });
-
-        // Properly cleanup all anime.js instances declared inside the scope
         return () => scope?.current?.revert();
-    }, []);
+    }, [circleActiveTop]);
 
-    const handleClick = (iconIndex: number, transValue: number) => {
-        if (activeIcon !== iconIndex) {
-            scope?.current?.methods.animateInactive(`.icon-wrapper-${activeIcon}-dsktp`);
+    useEffect(() => {
+        const handleWheel = (event: WheelEvent) => {
+            if (event.deltaY > 0) {
+                // Scrolling down
+                if (activeIcon < 4) {
+                    handleClick(activeIcon + 1);
+                }
+            } else if (event.deltaY < 0) {
+                // Scrolling up
+                if (activeIcon > 1) {
+                    handleClick(activeIcon - 1);
+                }
+            }
+        };
+
+        const handleTouchStart = (event: TouchEvent) => {
+            touchStartY.current = event.touches[0].clientY; // Record the starting Y position
+        };
+
+        const handleTouchEnd = (event: TouchEvent) => {
+            touchEndY.current = event.changedTouches[0].clientY; // Record the ending Y position
+
+            if (touchStartY.current - touchEndY.current > 50) {
+                // Swiping up
+                if (activeIcon < 4) {
+                    handleClick(activeIcon - 1);
+                }
+            } else if (touchEndY.current - touchStartY.current > 50) {
+                // Swiping down
+                if (activeIcon > 1) {
+                    handleClick(activeIcon - 1);
+                }
+            }
+        };
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+                // Down/Right arrow key pressed
+                if (activeIcon < 4) {
+                    handleClick(activeIcon + 1);
+                }
+            } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+                // Up/Left arrow key pressed
+                if (activeIcon > 1) {
+                    handleClick(activeIcon - 1);
+                }
+            }
+        };
+
+        window.addEventListener('wheel', handleWheel);
+        window.addEventListener('touchstart', handleTouchStart);
+        window.addEventListener('touchend', handleTouchEnd);
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('wheel', handleWheel);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchend', handleTouchEnd);
+            window.removeEventListener('keydown', handleKeyDown);
         }
-        setActiveIcon(iconIndex);
-        scope?.current?.methods.moveBlob(transValue);
-        scope?.current?.methods.animateActive(`.icon-wrapper-${iconIndex}-dsktp`);
-    };
+    }, [activeIcon]);
 
     return (
-        <div ref={root}>
-            <div className="stage-dsktp">
-            <div className="stage-overlay"></div> {/* Add this overlay */}
+        <div ref={root} className={`circle-container  ${className}`}>
+            <div className="bubble" />
+            <div className="circle-active" ref={circleActiveRef}
+                style={{
+                    top: `${circleActiveTop}px`,
+                }} />
+            <div className={`circle-1 ${activeIcon === 1 ? 'active' : ''}`} ref={circleStartRef} onClick={() => handleClick(1)}>
+                <RxHome className='icon' />
+                {activeIcon !== 1 && <span className="icon-label">Home</span>}
+            </div>
+            <div className={`circle-2 ${activeIcon === 2 ? 'active' : ''}`} onClick={() => handleClick(2)} >
+                <RxPerson className='icon' />
+                {activeIcon !== 2 && <span className="icon-label">About Me</span>}
+            </div>
+            <div className={`circle-3 ${activeIcon === 3 ? 'active' : ''}`} onClick={() => handleClick(3)} >
+                <RxCode className='icon' />
+                {activeIcon !== 3 && <span className="icon-label">Projects</span>}
+            </div>
+            <div className={`circle-4 ${activeIcon === 4 ? 'active' : ''}`} onClick={() => handleClick(4)} >
+                <RxEnvelopeClosed className='icon' />
+                {activeIcon !== 4 && <span className="icon-label">Contact Me</span>}
 
-                <div className="circle-select-dsktp" />
-                <div className="circle-one-dsktp" />
-                <div className="circle-two-dsktp" />
-                <div className="circle-three-dsktp" />
-                <div className="circle-four-dsktp" />
-                <div className="circle-one-s2-dsktp" />
-                <div className="circle-two-s2-dsktp" />
-                <div className="circle-three-s2-dsktp" />
-                <div
-                    className={`icon-wrapper-1-dsktp ${activeIcon === 1 ? 'active' : ''}`}
-                    onClick={() => handleClick(1, 42)}
-                >
-                    <RxHome className="icon-dsktp" />
-                    <span className="icon-label">Home</span>
-                </div>
-                <div
-                    className={`icon-wrapper-2-dsktp ${activeIcon === 2 ? 'active' : ''}`}
-                    onClick={() => handleClick(2, 93)}
-                >
-                    <RxPerson className="icon-dsktp" />
-                    <span className="icon-label">About Me</span>
-                </div>
-                <div
-                    className={`icon-wrapper-3-dsktp ${activeIcon === 3 ? 'active' : ''}`}
-                    onClick={() => handleClick(3, 143)}
-                >
-                    <RxCode className="icon-dsktp" />
-                    <span className="icon-label">Projects</span>
-                </div>
-                <div
-                    className={`icon-wrapper-4-dsktp ${activeIcon === 4 ? 'active' : ''}`}
-                    onClick={() => handleClick(4, 193)}
-                >
-                    <RxEnvelopeClosed className="icon-dsktp" />
-                    <span className="icon-label">Contact Me</span>
-                </div>
             </div>
         </div>
     );
-};
-
+}
 export default NavBarDesktop;

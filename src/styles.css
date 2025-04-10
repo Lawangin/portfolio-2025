@@ -69,23 +69,49 @@ body {
   background-image: url('/blob_bkg.jpg'); 
   background-size: cover; 
   background-repeat: no-repeat; 
-  background-position: center; 
+  background-position: center;
+  position: relative;
+}
+
+body::before {
+  content: ''; /* Create the overlay */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(6, 11, 95, 0.3); /* Semi-transparent black overlay */
+  z-index: -1; /* Ensure it stays behind all content */
 }
 
 .container {
-  display: flex;
-  justify-content: start;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr; /* Single column by default (mobile) */
+  grid-template-rows: 1fr; /* Nav at the top, content below */
   height: 100vh;
   width: 100vw;
   max-width: 1728px;
 }
 
-@media (max-width: 768px) {
+.box-1 {
+  grid-row: 1; /* Place in the second row */
+  grid-column: 1; /* Default column for mobile */
+}
+
+/* .box-2 {
+  grid-row: 3; 
+  grid-column: 1; 
+} */
+
+@media (min-width: 768px) {
   .container {
-    justify-content: center;
-    align-items: start;
-
+    grid-template-columns: 1fr; /* Nav on the left, two boxes in a row */
+    grid-template-rows: 1fr; /* Single row layout */
   }
+  
 
+  /* .box-2 {
+    grid-row: 1;
+    grid-column: 3; 
+  } */
 }

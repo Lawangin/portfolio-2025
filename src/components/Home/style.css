@@ -1,0 +1,10 @@
+.home {
+    color: white;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    flex-direction: column; /* Stack content in a column */
+    height: calc(100vh - 60px); /* Full height minus navbar height */
+    margin-top: 60px; /* Prevent overlap with the fixed navbar */
+    text-align: center; 
+}
