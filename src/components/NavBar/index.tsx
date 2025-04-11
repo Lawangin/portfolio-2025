@@ -38,56 +38,59 @@ const NavBar = ({ className }: INavProps) => {
         return 0;
     }
 
-    const handleClick = (iconIndex: number, backwards?: boolean) => {
+    const handleClick = (iconIndex: number) => {
         switch (iconIndex) {
+            case 1:
+                setPageTitle("Home");
+                break;
             case 1.5:
-                setPageTitle('About Me Part 1');
+                setPageTitle("About Me Part 1");
                 break;
             case 2:
-                if (backwards) {
-                    setPageTitle('About Me Part 2');
-                } else {
-                    setPageTitle('About Me Part 1');
-                }
+                setPageTitle("About Me Part 2");
                 break;
             case 2.5:
-                setPageTitle('About Me Part 2');
+                setPageTitle("Projects Part 1");
                 break;
             case 3:
-                setPageTitle("Projects");
+                setPageTitle("Projects Part 2");
                 break;
             case 4:
                 setPageTitle("Contact Me");
                 break;
             default:
-                setPageTitle("Home")
+                setPageTitle("Home");
         }
-        
-        const normalizedIconIndex = backwards ? Math.round(iconIndex) : Math.floor(iconIndex);
-        const normalizedActiveIcon = backwards ? Math.round(activeIcon) : Math.floor(activeIcon)
 
-        if (iconIndex === 2.5 || iconIndex === 1.5) {
-            setActiveIcon(iconIndex);
-            setPageIndex(iconIndex)
-            return;
-        }
+        // Define which icon should get deactivated
+        const deactivationTarget =
+            activeIcon === 1.5 ? 2 :
+                activeIcon === 2.5 ? 3 :
+                    Math.floor(activeIcon);
+
+        // Define which icon should be visually activated
+        const visualTarget =
+            iconIndex === 1.5 ? 2 :
+                iconIndex === 2.5 ? 3 :
+                    Math.floor(iconIndex);
 
         if (activeIcon !== iconIndex) {
-            scope?.current?.methods.animateInactive(`.circle-${normalizedActiveIcon}`); // Use floored value for the current active icon
+            scope?.current?.methods.animateInactive(`.circle-${deactivationTarget}`);
         }
-        setActiveIcon(iconIndex); // Update the state with the exact value
 
-        // Use flooredIconIndex for animations
-        scope?.current?.methods.animateActiveBlob(normalizedIconIndex, normalizedIconIndex === normalizedActiveIcon);
-        scope?.current?.methods.animateActive(`.circle-${normalizedIconIndex}`);
+        setActiveIcon(iconIndex);
+        setPageIndex(iconIndex);
 
+        scope?.current?.methods.animateActiveBlob(
+            visualTarget,
+            visualTarget === deactivationTarget
+        );
 
-        setPageIndex(iconIndex)
+        scope?.current?.methods.animateActive(`.circle-${visualTarget}`);
 
     };
 
     useEffect(() => {
-        // Set the initial position of circle-active after the DOM is mounted
         const initialLeft = getFirstCirclePosition();
         setCircleActiveLeft(initialLeft - 20);
     }, []);
@@ -122,13 +125,17 @@ const NavBar = ({ className }: INavProps) => {
                 const bubbleLeft = [`${currentActiveLeftValue + 70}px`, `${currentActiveLeftValue + 40}px`];
                 const bubbleRight = [`${currentActiveLeftValue - 30}px`, `${currentActiveLeftValue}px`];
 
-                !indexSimilar && animate('.bubble', {
-                    left: leftValue < currentActiveLeftValue ? bubbleRight : bubbleLeft,
-                    opacity: [0, 1, 0],
-                    scale: [1, .5, .2],
-                    delay: 200,
-                    duration: 600
-                })
+                const isFullStepTransition = Number.isInteger(iconIndex) && Number.isInteger(pageIndex);
+
+                if (!indexSimilar && isFullStepTransition) {
+                    animate('.bubble', {
+                        left: leftValue < currentActiveLeftValue ? bubbleRight : bubbleLeft,
+                        opacity: [0, 1, 0],
+                        scale: [1, .5, .2],
+                        delay: 200,
+                        duration: 600
+                    })
+                }
             })
 
             scope.add('animateActive', (selector: string) => {
@@ -151,28 +158,30 @@ const NavBar = ({ className }: INavProps) => {
         return () => scope?.current?.revert();
     }, [circleActiveLeft]);
 
+    const scrollSteps = [1, 1.5, 2, 2.5, 3, 4];
+
     useEffect(() => {
-        const backwards = true
+        const getNextStep = (current: number, direction: 'up' | 'down') => {
+            const currentIndex = scrollSteps.indexOf(current);
+            if (currentIndex === -1) return current;
+
+            if (direction === 'down' && currentIndex < scrollSteps.length - 1) {
+                return scrollSteps[currentIndex + 1];
+            }
+            if (direction === 'up' && currentIndex > 0) {
+                return scrollSteps[currentIndex - 1];
+            }
+
+            return current;
+        };
 
         const handleWheel = (event: WheelEvent) => {
-            if (event.deltaY > 0) {
-                // Scrolling down
-                if (activeIcon < 4) {
-                    if (activeIcon == 2) {
-                        handleClick(activeIcon + .5)
-                    } else {
-                        handleClick(Math.floor(activeIcon + 1));
-                    }
-                }
-            } else if (event.deltaY < 0) {
-                // Scrolling up
-                if (activeIcon > 1) {
-                    if (activeIcon == 2) {
-                        handleClick(activeIcon - .5, backwards)
-                    } else {
-                        handleClick(Math.round(activeIcon - 1), backwards);
-                    }
-                }
+            const direction = event.deltaY > 0 ? 'down' : 'up';
+
+            const nextIcon = getNextStep(activeIcon, direction);
+          
+            if (nextIcon !== activeIcon) {
+              handleClick(nextIcon);
             }
         };
 
@@ -181,52 +190,37 @@ const NavBar = ({ className }: INavProps) => {
         };
 
         const handleTouchEnd = (event: TouchEvent) => {
-            touchEndY.current = event.changedTouches[0].clientY; // Record the ending Y position
+            touchEndY.current = event.changedTouches[0].clientY;
 
-            if (touchStartY.current - touchEndY.current > 50) {
-                // Swiping up
-                if (activeIcon < 4) {
-                    if (activeIcon == 2) {
-                        handleClick(activeIcon + .5)
-                    } else {
-                        handleClick(Math.floor(activeIcon + 1));
-                    }
-                }
-            } else if (touchEndY.current - touchStartY.current > 50) {
-                // Swiping down
-                if (activeIcon > 1) {
-                    if (activeIcon == 2) {
-                        handleClick(activeIcon - .5, backwards)
-                    } else {
-                        handleClick(Math.round(activeIcon - 1), backwards);
-                    }
+            const distance = touchStartY.current - touchEndY.current;
+
+            if (Math.abs(distance) > 50) {
+                const direction = distance > 0 ? 'down' : 'up';
+                const nextIcon = getNextStep(activeIcon, direction);
+                if (nextIcon !== activeIcon) {
+                    handleClick(nextIcon);
                 }
             }
         };
 
         const handleKeyDown = (event: KeyboardEvent) => {
+            let direction: 'up' | 'down' | null = null;
+
             if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-                // Down/Right arrow key pressed
-                if (activeIcon < 4) {
-                    if (activeIcon == 2) {
-                        handleClick(activeIcon + .5)
-                    } else {
-                        handleClick(Math.floor(activeIcon + 1));
-                    }
-                }
+                direction = 'down';
             } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
-                // Up/Left arrow key pressed
-                if (activeIcon > 1) {
-                    if (activeIcon == 2) {
-                        handleClick(activeIcon - .5, backwards)
-                    } else {
-                        handleClick(Math.round(activeIcon - 1), backwards);
-                    }
+                direction = 'up';
+            }
+
+            if (direction) {
+                const nextIcon = getNextStep(activeIcon, direction);
+                if (nextIcon !== activeIcon) {
+                    handleClick(nextIcon);
                 }
             }
         };
 
-        window.addEventListener('wheel', handleWheel);
+        window.addEventListener('wheel', handleWheel, { passive: true });
         window.addEventListener('touchstart', handleTouchStart);
         window.addEventListener('touchend', handleTouchEnd);
         window.addEventListener('keydown', handleKeyDown);
@@ -240,26 +234,44 @@ const NavBar = ({ className }: INavProps) => {
     }, [activeIcon]);
 
     return (
-        <div ref={root} className={`circle-container  ${className}`}>
+        <div ref={root} className={`circle-container ${className}`}>
             <div className="bubble" />
-            <div className="circle-active" ref={circleActiveRef}
-                style={{
-                    left: `${circleActiveLeft}px`,
-                }} />
-            <div className={`circle-1 ${activeIcon === 1 ? 'active' : ''}`} ref={circleStartRef} onClick={() => handleClick(1)}>
-                <RxHome className='icon' />
+            <div
+                className="circle-active"
+                ref={circleActiveRef}
+                style={{ left: `${circleActiveLeft}px` }}
+            />
+
+            <div
+                className={`circle-1 ${activeIcon === 1 ? 'active' : ''}`}
+                ref={circleStartRef}
+                onClick={() => handleClick(1)}
+            >
+                <RxHome className="icon" />
             </div>
-            <div className={`circle-2 ${(activeIcon >= 1.5 && activeIcon <= 2.5) ? 'active' : ''}`} 
-            onClick={() => handleClick(2)} >
-                <RxPerson className='icon' />
+
+            <div
+                className={`circle-2 ${activeIcon >= 1.5 && activeIcon <= 2 ? 'active' : ''}`}
+                onClick={() => handleClick(2)}
+            >
+                <RxPerson className="icon" />
             </div>
-            <div className={`circle-3 ${activeIcon === 3 ? 'active' : ''}`} onClick={() => handleClick(3)} >
-                <RxCode className='icon' />
+
+            <div
+                className={`circle-3 ${activeIcon >= 2.5 && activeIcon <= 3 ? 'active' : ''}`}
+                onClick={() => handleClick(3)}
+            >
+                <RxCode className="icon" />
             </div>
-            <div className={`circle-4 ${activeIcon === 4 ? 'active' : ''}`} onClick={() => handleClick(4)} >
-                <RxEnvelopeClosed className='icon' />
+
+            <div
+                className={`circle-4 ${activeIcon === 4 ? 'active' : ''}`}
+                onClick={() => handleClick(4)}
+            >
+                <RxEnvelopeClosed className="icon" />
             </div>
         </div>
+
     );
 }
 export default NavBar;
