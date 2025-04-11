@@ -28,13 +28,6 @@ function App() {
 
 
   return (
-    <PageProvider>
-      <div className='container'>
-        {/* <div style={{ position: 'fixed' }}> */}
-          {isDesktop ? <NavBarDesktop className={'nav'}/> : <NavBar className ={'nav'} /> }
-        {/* </div> */}
         <Home className={'box-1'} />
-      </div>
-    </PageProvider>
   )
 }

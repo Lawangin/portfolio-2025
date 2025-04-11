@@ -11,9 +11,44 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as Projects2Import } from './routes/Projects-2'
+import { Route as Projects1Import } from './routes/Projects-1'
+import { Route as ContactImport } from './routes/Contact'
+import { Route as About2Import } from './routes/About-2'
+import { Route as About1Import } from './routes/About-1'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const Projects2Route = Projects2Import.update({
+  id: '/Projects-2',
+  path: '/Projects-2',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const Projects1Route = Projects1Import.update({
+  id: '/Projects-1',
+  path: '/Projects-1',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ContactRoute = ContactImport.update({
+  id: '/Contact',
+  path: '/Contact',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const About2Route = About2Import.update({
+  id: '/About-2',
+  path: '/About-2',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const About1Route = About1Import.update({
+  id: '/About-1',
+  path: '/About-1',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -32,6 +67,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/About-1': {
+      id: '/About-1'
+      path: '/About-1'
+      fullPath: '/About-1'
+      preLoaderRoute: typeof About1Import
+      parentRoute: typeof rootRoute
+    }
+    '/About-2': {
+      id: '/About-2'
+      path: '/About-2'
+      fullPath: '/About-2'
+      preLoaderRoute: typeof About2Import
+      parentRoute: typeof rootRoute
+    }
+    '/Contact': {
+      id: '/Contact'
+      path: '/Contact'
+      fullPath: '/Contact'
+      preLoaderRoute: typeof ContactImport
+      parentRoute: typeof rootRoute
+    }
+    '/Projects-1': {
+      id: '/Projects-1'
+      path: '/Projects-1'
+      fullPath: '/Projects-1'
+      preLoaderRoute: typeof Projects1Import
+      parentRoute: typeof rootRoute
+    }
+    '/Projects-2': {
+      id: '/Projects-2'
+      path: '/Projects-2'
+      fullPath: '/Projects-2'
+      preLoaderRoute: typeof Projects2Import
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +109,70 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/About-1': typeof About1Route
+  '/About-2': typeof About2Route
+  '/Contact': typeof ContactRoute
+  '/Projects-1': typeof Projects1Route
+  '/Projects-2': typeof Projects2Route
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/About-1': typeof About1Route
+  '/About-2': typeof About2Route
+  '/Contact': typeof ContactRoute
+  '/Projects-1': typeof Projects1Route
+  '/Projects-2': typeof Projects2Route
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/About-1': typeof About1Route
+  '/About-2': typeof About2Route
+  '/Contact': typeof ContactRoute
+  '/Projects-1': typeof Projects1Route
+  '/Projects-2': typeof Projects2Route
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/About-1'
+    | '/About-2'
+    | '/Contact'
+    | '/Projects-1'
+    | '/Projects-2'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/About-1' | '/About-2' | '/Contact' | '/Projects-1' | '/Projects-2'
+  id:
+    | '__root__'
+    | '/'
+    | '/About-1'
+    | '/About-2'
+    | '/Contact'
+    | '/Projects-1'
+    | '/Projects-2'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  About1Route: typeof About1Route
+  About2Route: typeof About2Route
+  ContactRoute: typeof ContactRoute
+  Projects1Route: typeof Projects1Route
+  Projects2Route: typeof Projects2Route
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  About1Route: About1Route,
+  About2Route: About2Route,
+  ContactRoute: ContactRoute,
+  Projects1Route: Projects1Route,
+  Projects2Route: Projects2Route,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +185,31 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/About-1",
+        "/About-2",
+        "/Contact",
+        "/Projects-1",
+        "/Projects-2"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/About-1": {
+      "filePath": "About-1.tsx"
+    },
+    "/About-2": {
+      "filePath": "About-2.tsx"
+    },
+    "/Contact": {
+      "filePath": "Contact.tsx"
+    },
+    "/Projects-1": {
+      "filePath": "Projects-1.tsx"
+    },
+    "/Projects-2": {
+      "filePath": "Projects-2.tsx"
     }
   }
 }

@@ -3,12 +3,15 @@ import { useEffect, useRef, useState } from 'react';
 import { animate, createScope, Scope, createSpring, waapi } from 'animejs';
 import { RxHome, RxPerson, RxCode, RxEnvelopeClosed } from "react-icons/rx";
 import { usePageContext } from '@/context/PageContext/PageContext';
+import { useRouter } from '@tanstack/react-router'
 
 interface INavProps {
     className: string;
 }
 
 const NavBar = ({ className }: INavProps) => {
+    const router = useRouter();
+
     const root = useRef<HTMLDivElement | null>(null);
     const scope = useRef<Scope | null>(null);
     const circleActiveRef = useRef<HTMLDivElement | null>(null);
@@ -87,6 +90,22 @@ const NavBar = ({ className }: INavProps) => {
         );
 
         scope?.current?.methods.animateActive(`.circle-${visualTarget}`);
+
+        const pageMap: Record<number, string> = {
+            1: '/',
+            1.5: '/about-1',
+            2: '/about-2',
+            2.5: '/projects-1',
+            3: '/projects-2',
+            4: '/contact',
+          };
+        
+          const path = pageMap[iconIndex];
+          if (path) {
+            setTimeout(() => {
+              router.navigate({ to: path, replace: false });
+            }, 1000); // match your animation duration
+          }
 
     };
 
