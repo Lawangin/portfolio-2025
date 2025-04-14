@@ -127,63 +127,72 @@ const NavBarDesktop = ({ className }: INavProps) => {
         return () => scope?.current?.revert();
     }, [circleActiveTop]);
 
+    const scrollSteps = [1, 2, 3, 4];
+
     useEffect(() => {
-        const handleWheel = (event: WheelEvent) => {
-            if (event.deltaY > 0) {
-                // Scrolling down
-                if (activeIcon < 4) {
-                    handleClick(activeIcon + 1);
-                }
-            } else if (event.deltaY < 0) {
-                // Scrolling up
-                if (activeIcon > 1) {
-                    handleClick(activeIcon - 1);
-                }
+        const getNextStep = (current: number, direction: 'up' | 'down') => {
+            const currentIndex = scrollSteps.indexOf(current);
+            if (currentIndex === -1) return current;
+          
+            if (direction === 'down' && currentIndex < scrollSteps.length - 1) {
+              return scrollSteps[currentIndex + 1];
             }
-        };
-
-        const handleTouchStart = (event: TouchEvent) => {
-            touchStartY.current = event.touches[0].clientY; // Record the starting Y position
-        };
-
-        const handleTouchEnd = (event: TouchEvent) => {
-            touchEndY.current = event.changedTouches[0].clientY; // Record the ending Y position
-
-            if (touchStartY.current - touchEndY.current > 50) {
-                // Swiping up
-                if (activeIcon < 4) {
-                    handleClick(activeIcon - 1);
-                }
-            } else if (touchEndY.current - touchStartY.current > 50) {
-                // Swiping down
-                if (activeIcon > 1) {
-                    handleClick(activeIcon - 1);
-                }
+            if (direction === 'up' && currentIndex > 0) {
+              return scrollSteps[currentIndex - 1];
             }
-        };
+          
+            return current;
+          };
 
-        const handleKeyDown = (event: KeyboardEvent) => {
+          const handleWheel = (event: WheelEvent) => {
+            const direction = event.deltaY > 0 ? 'down' : 'up';
+            const nextIcon = getNextStep(activeIcon, direction);
+          
+            if (nextIcon !== activeIcon) {
+              handleClick(nextIcon);
+            }
+          };
+          
+
+          const handleTouchEnd = (event: TouchEvent) => {
+            touchEndY.current = event.changedTouches[0].clientY;
+            const distance = touchStartY.current - touchEndY.current;
+          
+            if (Math.abs(distance) > 50) {
+              const direction = distance > 0 ? 'down' : 'up';
+              const nextIcon = getNextStep(activeIcon, direction);
+          
+              if (nextIcon !== activeIcon) {
+                handleClick(nextIcon);
+              }
+            }
+          };
+          
+
+          const handleKeyDown = (event: KeyboardEvent) => {
+            let direction: 'up' | 'down' | null = null;
+          
             if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-                // Down/Right arrow key pressed
-                if (activeIcon < 4) {
-                    handleClick(activeIcon + 1);
-                }
+              direction = 'down';
             } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
-                // Up/Left arrow key pressed
-                if (activeIcon > 1) {
-                    handleClick(activeIcon - 1);
-                }
+              direction = 'up';
             }
-        };
+          
+            if (direction) {
+              const nextIcon = getNextStep(activeIcon, direction);
+              if (nextIcon !== activeIcon) {
+                handleClick(nextIcon);
+              }
+            }
+          };
+          
 
         window.addEventListener('wheel', handleWheel);
-        window.addEventListener('touchstart', handleTouchStart);
         window.addEventListener('touchend', handleTouchEnd);
         window.addEventListener('keydown', handleKeyDown);
 
         return () => {
             window.removeEventListener('wheel', handleWheel);
-            window.removeEventListener('touchstart', handleTouchStart);
             window.removeEventListener('touchend', handleTouchEnd);
             window.removeEventListener('keydown', handleKeyDown);
         }

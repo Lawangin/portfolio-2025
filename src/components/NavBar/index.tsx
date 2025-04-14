@@ -271,14 +271,14 @@ const NavBar = ({ className }: INavProps) => {
 
             <div
                 className={`circle-2 ${activeIcon >= 1.5 && activeIcon <= 2 ? 'active' : ''}`}
-                onClick={() => handleClick(2)}
+                onClick={() => handleClick(1.5)}
             >
                 <RxPerson className="icon" />
             </div>
 
             <div
                 className={`circle-3 ${activeIcon >= 2.5 && activeIcon <= 3 ? 'active' : ''}`}
-                onClick={() => handleClick(3)}
+                onClick={() => handleClick(2.5)}
             >
                 <RxCode className="icon" />
             </div>
