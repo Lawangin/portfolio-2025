@@ -23,10 +23,8 @@ export const Route = createRootRoute({
 
     return (
       <PageProvider>
-        <div className="container">
-          {/* Render NavBar based on screen size */}
+        <div>
           {isDesktop ? <NavBarDesktop className="nav" /> : <NavBar className="nav" />}
-          {/* Render child routes */}
             <Outlet />
         </div>
         <TanStackRouterDevtools />
