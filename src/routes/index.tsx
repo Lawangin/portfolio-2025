@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 // import NavBarDesktop from '@/components/NavBarDesktop';
 import '../styles.css'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import GlassContainer from '@/components/GlassContainer/GlassContainer'
+import GlassContainer from '@/components/GlassContainer'
+import ScrollDownIndicator from '@/components/ScrollDownIndicator'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -35,7 +36,7 @@ function App() {
           <img
             src="/me.jpg"
             alt="Lawangin avatar"
-            className="w-32 h-32 md:w-80 md:h-80 rounded-full border-4 border-white/20 object-cover shadow-md relative z-10"
+            className="w-32 h-32 md:w-80 md:h-80 rounded-full border-4 border-white/80 object-cover shadow-md relative z-10"
           />
         </div>
 
@@ -82,6 +83,7 @@ function App() {
           </div>
         </GlassContainer>
       </div>
+      <ScrollDownIndicator />
     </div>
   )
 }

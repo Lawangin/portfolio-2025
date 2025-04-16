@@ -2,12 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import { animate, createScope, Scope, createSpring, waapi } from 'animejs';
 import { RxHome, RxPerson, RxCode, RxEnvelopeClosed } from "react-icons/rx";
 import { usePageContext } from '@/context/PageContext/PageContext';
+import { useRouter } from '@tanstack/react-router'
 
 interface INavProps {
     className: string;
 }
 
 const NavBarDesktop = ({ className }: INavProps) => {
+    const router = useRouter();
+
     const root = useRef<HTMLDivElement | null>(null);
     const scope = useRef<Scope | null>(null);
     const circleActiveRef = useRef<HTMLDivElement | null>(null);
@@ -60,6 +63,20 @@ const NavBarDesktop = ({ className }: INavProps) => {
             default:
                 setPageTitle("Home")
         }
+
+        const pageMap: Record<number, string> = {
+            1: '/',
+            2: '/about-1',
+            3: '/projects-1',
+            4: '/contact',
+          };
+        
+          const path = pageMap[iconIndex];
+          if (path) {
+            setTimeout(() => {
+              router.navigate({ to: path, replace: false });
+            }, 1000); // match your animation duration
+          }
     };
 
     useEffect(() => {
