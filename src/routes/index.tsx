@@ -30,13 +30,13 @@ function App() {
         {/* Box 2: Avatar with background ring */}
         <div className="flex justify-center content-end items-center relative">
           {/* Glass-like Circle Background */}
-          <div className="absolute w-40 h-40 md:w-96 md:h-96 rounded-full bg-white/10 border border-white/20 backdrop-blur-md" />
+          <div className="absolute w-40 h-40 lg:w-96 lg:h-96 md:w-80 md:h-80 rounded-full bg-white/10 border border-white/20 backdrop-blur-md" />
 
           {/* Avatar Image */}
           <img
             src="/me.jpg"
             alt="Lawangin avatar"
-            className="w-32 h-32 md:w-80 md:h-80 rounded-full border-4 border-white/80 object-cover shadow-md relative z-10"
+            className="w-32 h-32 lg:w-80 lg:h-80 md:w-64 md:h-64 rounded-full border-4 border-white/80 object-cover shadow-md relative z-10"
           />
         </div>
 
@@ -49,7 +49,7 @@ function App() {
 
       {/* Bottom Row: GlassContainer centered */}
       <div className="mt-10 w-full px-4 grid justify-center max-w-5xl place-items-start">
-        <GlassContainer className="w-full space-y-4 md:min-w-3xl">
+        <GlassContainer className="w-full space-y-4 md:min-w-xl lg:min-w-3xl">
           <Label className="text-4xl md:text-5xl md:text-center font-bold leading-snug drop-shadow-sm text-white p-2 text-left flex flex-col">
             <span className="block">Hi, I am Lawangin!</span>
             <span className="block">

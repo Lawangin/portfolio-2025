@@ -86,32 +86,80 @@ const NavBar = ({ className }: INavProps) => {
 
         scope?.current?.methods.animateActiveBlob(
             visualTarget,
-            visualTarget === deactivationTarget
+            visualTarget === deactivationTarget,
+            iconIndex
         );
 
         scope?.current?.methods.animateActive(`.circle-${visualTarget}`);
-
-        const pageMap: Record<number, string> = {
-            1: '/',
-            1.5: '/about-1',
-            2: '/about-2',
-            2.5: '/projects-1',
-            3: '/projects-2',
-            4: '/contact',
-          };
-        
-          const path = pageMap[iconIndex];
-          if (path) {
-            setTimeout(() => {
-              router.navigate({ to: path, replace: false });
-            }, 1000); // match your animation duration
-          }
 
     };
 
     useEffect(() => {
         const initialLeft = getFirstCirclePosition();
         setCircleActiveLeft(initialLeft - 20);
+
+        const pathToIndexMap: Record<string, number> = {
+            '/': 1,
+            '/about-1': 1.5,
+            '/about-2': 2,
+            '/projects-1': 2.5,
+            '/projects-2': 3,
+            '/contact': 4,
+        };
+
+        const currentPath = router.state.location.pathname;
+        const matchedIndex = pathToIndexMap[currentPath];
+
+        if (matchedIndex) {
+            setActiveIcon(matchedIndex);
+            setPageIndex(matchedIndex);
+
+            switch (matchedIndex) {
+                case 1:
+                    setPageTitle("Home");
+                    break;
+                case 1.5:
+                    setPageTitle("About Me Part 1");
+                    break;
+                case 2:
+                    setPageTitle("About Me Part 2");
+                    break;
+                case 2.5:
+                    setPageTitle("Projects Part 1");
+                    break;
+                case 3:
+                    setPageTitle("Projects Part 2");
+                    break;
+                case 4:
+                    setPageTitle("Contact Me");
+                    break;
+            }
+
+            setTimeout(() => {
+                const visualTarget =
+                    matchedIndex === 1.5 ? 2 :
+                        matchedIndex === 2.5 ? 3 :
+                            Math.floor(matchedIndex);
+
+                const prevCircle =
+                    matchedIndex === 1.5 ? 1 :
+                        matchedIndex === 2.5 ? 2 :
+                            null;
+
+                if (prevCircle) {
+                    scope.current?.methods.animateInactive(`.circle-${prevCircle}`);
+                }
+
+
+                scope.current?.methods.animateActiveBlob(
+                    visualTarget,
+                    true,
+                    matchedIndex
+                );
+
+                scope.current?.methods.animateActive(`.circle-${visualTarget}`);
+            }, 50);
+        }
     }, []);
 
     useEffect(() => {
@@ -120,12 +168,12 @@ const NavBar = ({ className }: INavProps) => {
                 scale: 1.75
             })
 
-            animate(`.circle-${pageIndex}`, {
+            animate(`.circle-${Math.floor(pageIndex)}`, {
                 width: '40px',
                 height: '40px'
             })
 
-            scope.add('animateActiveBlob', (iconIndex, indexSimilar) => {
+            scope.add('animateActiveBlob', (iconIndex, indexSimilar, actualIndexForPath) => {
                 const leftValue = circleActiveLeft + ((iconIndex - 1) * 70);
                 const currentActiveLeftValue = getActiveCirclePosition()!;
                 const scaleYKeyFrames = [1.75, 1.75, 1, 1.75]
@@ -134,11 +182,27 @@ const NavBar = ({ className }: INavProps) => {
                 const scaleY = leftValue < currentActiveLeftValue ? scaleYKeyFrames : scaleYKeyFrames.reverse();
                 const scaleX = leftValue < currentActiveLeftValue ? scaleXKeyFrames : scaleXKeyFrames.reverse();
 
+                const pageMap: Record<number, string> = {
+                    1: '/',
+                    1.5: '/about-1',
+                    2: '/about-2',
+                    2.5: '/projects-1',
+                    3: '/projects-2',
+                    4: '/contact',
+                };
+
+                const path = pageMap[actualIndexForPath];
+
                 waapi.animate('.circle-active', {
                     left: `${leftValue}px`,
                     scaleY: scaleY,
                     scaleX: scaleX,
                     ease: createSpring({ stiffness: 70 }),
+                    onComplete: () => {
+                        if (path) {
+                            router.navigate({ to: path, replace: false });
+                        }
+                    },
                 });
 
                 const bubbleLeft = [`${currentActiveLeftValue + 70}px`, `${currentActiveLeftValue + 40}px`];
@@ -198,9 +262,9 @@ const NavBar = ({ className }: INavProps) => {
             const direction = event.deltaY > 0 ? 'down' : 'up';
 
             const nextIcon = getNextStep(activeIcon, direction);
-          
+
             if (nextIcon !== activeIcon) {
-              handleClick(nextIcon);
+                handleClick(nextIcon);
             }
         };
 

@@ -63,26 +63,59 @@ const NavBarDesktop = ({ className }: INavProps) => {
             default:
                 setPageTitle("Home")
         }
-
-        const pageMap: Record<number, string> = {
-            1: '/',
-            2: '/about-1',
-            3: '/projects-1',
-            4: '/contact',
-          };
-        
-          const path = pageMap[iconIndex];
-          if (path) {
-            setTimeout(() => {
-              router.navigate({ to: path, replace: false });
-            }, 1000); // match your animation duration
-          }
     };
 
     useEffect(() => {
         // Set the initial position of circle-active after the DOM is mounted
         const initialTop = getFirstCirclePosition();
         setCircleActiveTop(initialTop - 20);
+
+        const pathToIndexMap: Record<string, number> = {
+            '/': 1,
+            '/about-1': 2,
+            '/projects-1': 3,
+            '/contact': 4,
+          };
+        
+          const currentPath = router.state.location.pathname;
+          const matchedIndex = pathToIndexMap[currentPath];
+        
+          if (matchedIndex) {
+            setActiveIcon(matchedIndex);
+            setPageIndex(matchedIndex);
+        
+            // Set correct page title
+            switch (matchedIndex) {
+              case 1:
+                setPageTitle("Home");
+                break;
+              case 2:
+                setPageTitle("About Me");
+                break;
+              case 3:
+                setPageTitle("Projects");
+                break;
+              case 4:
+                setPageTitle("Contact Me");
+                break;
+            }
+        
+            setTimeout(() => {
+              // Optional: deactivate previous icon if coming from a different route
+              const prevCircle = matchedIndex > 1 ? matchedIndex - 1 : null;
+        
+              if (prevCircle) {
+                scope.current?.methods.animateInactive(`.circle-${prevCircle}`);
+              }
+        
+              scope.current?.methods.animateActiveBlob(
+                matchedIndex,
+                true // indexSimilar
+              );
+        
+              scope.current?.methods.animateActive(`.circle-${matchedIndex}`);
+            }, 50);
+          }
     }, []);
 
     useEffect(() => {
@@ -105,11 +138,25 @@ const NavBarDesktop = ({ className }: INavProps) => {
                 const scaleY = topValue < currentActiveTopValue ? scaleYKeyFrames : scaleYKeyFrames.reverse();
                 const scaleX = topValue < currentActiveTopValue ? scaleXKeyFrames : scaleXKeyFrames.reverse();
 
+                const pageMap: Record<number, string> = {
+                    1: '/',
+                    2: '/about-1',
+                    3: '/projects-1',
+                    4: '/contact',
+                };
+
+                const path = pageMap[iconIndex];
+
                 waapi.animate('.circle-active', {
                     top: `${topValue}px`,
                     scaleY: scaleY,
                     scaleX: scaleX,
                     ease: createSpring({ stiffness: 70 }),
+                    onComplete: () => {
+                        if (path) {
+                            router.navigate({ to: path, replace: false });
+                        }
+                    },
                 });
 
                 const bubbleLeft = [`${currentActiveTopValue + 70}px`, `${currentActiveTopValue + 40}px`];
@@ -150,59 +197,59 @@ const NavBarDesktop = ({ className }: INavProps) => {
         const getNextStep = (current: number, direction: 'up' | 'down') => {
             const currentIndex = scrollSteps.indexOf(current);
             if (currentIndex === -1) return current;
-          
+
             if (direction === 'down' && currentIndex < scrollSteps.length - 1) {
-              return scrollSteps[currentIndex + 1];
+                return scrollSteps[currentIndex + 1];
             }
             if (direction === 'up' && currentIndex > 0) {
-              return scrollSteps[currentIndex - 1];
+                return scrollSteps[currentIndex - 1];
             }
-          
-            return current;
-          };
 
-          const handleWheel = (event: WheelEvent) => {
+            return current;
+        };
+
+        const handleWheel = (event: WheelEvent) => {
             const direction = event.deltaY > 0 ? 'down' : 'up';
             const nextIcon = getNextStep(activeIcon, direction);
-          
-            if (nextIcon !== activeIcon) {
-              handleClick(nextIcon);
-            }
-          };
-          
 
-          const handleTouchEnd = (event: TouchEvent) => {
+            if (nextIcon !== activeIcon) {
+                handleClick(nextIcon);
+            }
+        };
+
+
+        const handleTouchEnd = (event: TouchEvent) => {
             touchEndY.current = event.changedTouches[0].clientY;
             const distance = touchStartY.current - touchEndY.current;
-          
-            if (Math.abs(distance) > 50) {
-              const direction = distance > 0 ? 'down' : 'up';
-              const nextIcon = getNextStep(activeIcon, direction);
-          
-              if (nextIcon !== activeIcon) {
-                handleClick(nextIcon);
-              }
-            }
-          };
-          
 
-          const handleKeyDown = (event: KeyboardEvent) => {
+            if (Math.abs(distance) > 50) {
+                const direction = distance > 0 ? 'down' : 'up';
+                const nextIcon = getNextStep(activeIcon, direction);
+
+                if (nextIcon !== activeIcon) {
+                    handleClick(nextIcon);
+                }
+            }
+        };
+
+
+        const handleKeyDown = (event: KeyboardEvent) => {
             let direction: 'up' | 'down' | null = null;
-          
+
             if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-              direction = 'down';
+                direction = 'down';
             } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
-              direction = 'up';
+                direction = 'up';
             }
-          
+
             if (direction) {
-              const nextIcon = getNextStep(activeIcon, direction);
-              if (nextIcon !== activeIcon) {
-                handleClick(nextIcon);
-              }
+                const nextIcon = getNextStep(activeIcon, direction);
+                if (nextIcon !== activeIcon) {
+                    handleClick(nextIcon);
+                }
             }
-          };
-          
+        };
+
 
         window.addEventListener('wheel', handleWheel);
         window.addEventListener('touchend', handleTouchEnd);
