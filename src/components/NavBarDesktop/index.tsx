@@ -75,47 +75,47 @@ const NavBarDesktop = ({ className }: INavProps) => {
             '/about-1': 2,
             '/projects-1': 3,
             '/contact': 4,
-          };
-        
-          const currentPath = router.state.location.pathname;
-          const matchedIndex = pathToIndexMap[currentPath];
-        
-          if (matchedIndex) {
+        };
+
+        const currentPath = router.state.location.pathname;
+        const matchedIndex = pathToIndexMap[currentPath];
+
+        if (matchedIndex) {
             setActiveIcon(matchedIndex);
             setPageIndex(matchedIndex);
-        
+
             // Set correct page title
             switch (matchedIndex) {
-              case 1:
-                setPageTitle("Home");
-                break;
-              case 2:
-                setPageTitle("About Me");
-                break;
-              case 3:
-                setPageTitle("Projects");
-                break;
-              case 4:
-                setPageTitle("Contact Me");
-                break;
+                case 1:
+                    setPageTitle("Home");
+                    break;
+                case 2:
+                    setPageTitle("About Me");
+                    break;
+                case 3:
+                    setPageTitle("Projects");
+                    break;
+                case 4:
+                    setPageTitle("Contact Me");
+                    break;
             }
-        
+
             setTimeout(() => {
-              // Optional: deactivate previous icon if coming from a different route
-              const prevCircle = matchedIndex > 1 ? matchedIndex - 1 : null;
-        
-              if (prevCircle) {
-                scope.current?.methods.animateInactive(`.circle-${prevCircle}`);
-              }
-        
-              scope.current?.methods.animateActiveBlob(
-                matchedIndex,
-                true // indexSimilar
-              );
-        
-              scope.current?.methods.animateActive(`.circle-${matchedIndex}`);
+                // Optional: deactivate previous icon if coming from a different route
+                const prevCircle = matchedIndex > 1 ? matchedIndex - 1 : null;
+
+                if (prevCircle) {
+                    scope.current?.methods.animateInactive(`.circle-${prevCircle}`);
+                }
+
+                scope.current?.methods.animateActiveBlob(
+                    matchedIndex,
+                    true // indexSimilar
+                );
+
+                scope.current?.methods.animateActive(`.circle-${matchedIndex}`);
             }, 50);
-          }
+        }
     }, []);
 
     useEffect(() => {
@@ -194,6 +194,10 @@ const NavBarDesktop = ({ className }: INavProps) => {
     const scrollSteps = [1, 2, 3, 4];
 
     useEffect(() => {
+        const SCROLL_THRESHOLD = 120; // Adjust this value as needed
+        let scrollBuffer = 0;
+        let isScrolling = false;
+
         const getNextStep = (current: number, direction: 'up' | 'down') => {
             const currentIndex = scrollSteps.indexOf(current);
             if (currentIndex === -1) return current;
@@ -208,12 +212,26 @@ const NavBarDesktop = ({ className }: INavProps) => {
             return current;
         };
 
-        const handleWheel = (event: WheelEvent) => {
-            const direction = event.deltaY > 0 ? 'down' : 'up';
-            const nextIcon = getNextStep(activeIcon, direction);
+        const resetScroll = () => {
+            scrollBuffer = 0;
+            isScrolling = false;
+          };
 
-            if (nextIcon !== activeIcon) {
-                handleClick(nextIcon);
+        const handleWheel = (event: WheelEvent) => {
+            scrollBuffer += event.deltaY;
+
+            if (isScrolling) return;
+        
+            if (scrollBuffer > SCROLL_THRESHOLD) {
+              isScrolling = true;
+              const next = getNextStep(activeIcon, 'down');
+              if (next !== activeIcon) handleClick(next);
+              setTimeout(resetScroll, 600); // adjust for animation duration
+            } else if (scrollBuffer < -SCROLL_THRESHOLD) {
+              isScrolling = true;
+              const next = getNextStep(activeIcon, 'up');
+              if (next !== activeIcon) handleClick(next);
+              setTimeout(resetScroll, 600);
             }
         };
 

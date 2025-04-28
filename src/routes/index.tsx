@@ -30,7 +30,7 @@ function App() {
         {/* Box 2: Avatar with background ring */}
         <div className="flex justify-center content-end items-center relative">
           {/* Glass-like Circle Background */}
-          <div className="absolute w-40 h-40 lg:w-96 lg:h-96 md:w-80 md:h-80 rounded-full bg-white/10 border border-white/20 backdrop-blur-md" />
+          <div className="absolute w-40 h-40 lg:w-96 lg:h-96 md:w-80 md:h-80 rounded-full bg-white/20 border border-white/30 backdrop-blur-md" />
 
           {/* Avatar Image */}
           <img

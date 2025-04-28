@@ -269,7 +269,7 @@ const NavBar = ({ className }: INavProps) => {
         };
 
         const handleTouchStart = (event: TouchEvent) => {
-            touchStartY.current = event.touches[0].clientY; // Record the starting Y position
+            touchStartY.current = event.touches[0].clientY;
         };
 
         const handleTouchEnd = (event: TouchEvent) => {
@@ -277,12 +277,18 @@ const NavBar = ({ className }: INavProps) => {
 
             const distance = touchStartY.current - touchEndY.current;
 
+            const atBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 5;
+            const atTop = window.scrollY <= 5;
+          
             if (Math.abs(distance) > 50) {
-                const direction = distance > 0 ? 'down' : 'up';
+              const direction = distance > 0 ? 'down' : 'up';
+          
+              if ((direction === 'down' && atBottom) || (direction === 'up' && atTop)) {
                 const nextIcon = getNextStep(activeIcon, direction);
                 if (nextIcon !== activeIcon) {
-                    handleClick(nextIcon);
+                  handleClick(nextIcon);
                 }
+              }
             }
         };
 
