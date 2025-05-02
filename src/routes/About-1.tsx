@@ -3,52 +3,19 @@ import GlassContainer from '@/components/GlassContainer'
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import ExperienceText from '@/components/ExperienceText'
-import {
-  SiTypescript,
-  SiReact,
-  SiJavascript,
-  SiNodedotjs,
-  SiAmazon,
-  SiDocker,
-  SiHtml5,
-  SiCss3,
-  SiPostgresql,
-  SiMongodb,
-  SiGraphql,
-  SiGithub,
-  SiPython,
-} from "react-icons/si";
-import { VscVscode } from "react-icons/vsc";
-import { FaJava } from "react-icons/fa";
 import { animate, createScope, Scope } from 'animejs';
+import { usePageContext } from '@/context/PageContext/PageContext'
+import { SkillsPage } from '@/components/SkillsPage/SkillsPage'
 
 export const Route = createFileRoute('/About-1')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const { pageIndex } = usePageContext();
+  const isDesktop = window.innerWidth >= 768;
   const root = useRef<HTMLDivElement | null>(null);
   const scope = useRef<Scope | null>(null);
-
-  const [hoveredIcon, setHoveredIcon] = useState<number | null>(null);
-
-  const icons = [
-    { id: 1, icon: <SiTypescript />, label: 'TypeScript' },
-    { id: 2, icon: <SiReact />, label: 'React' },
-    { id: 3, icon: <SiJavascript />, label: 'JavaScript' },
-    { id: 4, icon: <SiNodedotjs />, label: 'Node.js' },
-    { id: 5, icon: <SiAmazon />, label: 'AWS' },
-    { id: 6, icon: <SiDocker />, label: 'Docker' },
-    { id: 7, icon: <SiHtml5 />, label: 'HTML' },
-    { id: 8, icon: <SiCss3 />, label: 'CSS' },
-    { id: 9, icon: <SiPostgresql />, label: 'PostgreSQL' },
-    { id: 10, icon: <SiMongodb />, label: 'MongoDB' },
-    { id: 11, icon: <SiGraphql />, label: 'GraphQL' },
-    { id: 12, icon: <VscVscode />, label: 'VS Code' },
-    { id: 13, icon: <SiGithub />, label: 'GitHub' },
-    { id: 15, icon: <SiPython />, label: 'Python' },
-    { id: 16, icon: <FaJava />, label: 'Java' },
-  ];
 
   const skillsPm = [
     { name: 'React', color: 'bg-[#BA68C8]/60' },
@@ -84,33 +51,38 @@ function RouteComponent() {
   useEffect(() => {
     scope.current = createScope({ root: root as React.RefObject<HTMLElement | SVGElement> }).add(scope => {
 
-      scope.add('enterIcon', (selector: string) => {
-        animate(selector, {
-          width: '100px',
-          duration: 300,
+      if (isDesktop && pageIndex === 2) {
+        animate('.about-container', {
+          y: ['100px', '0px'],
+          opacity: [0, 1],
+          duration: 1500,
         });
-
-      });
-
-      scope.add('leaveIcon', (selector: string) => {
-        animate(selector, {
-          width: '60px',
-          duration: 300,
+      } else if (pageIndex === 1.5) {
+        animate('.about-container', {
+          y: ['100px', '0px'],
+          opacity: [0, 1],
+          duration: 1500,
         });
-      });
+      } else {
+        animate('.about-container', {
+          y: ['0px', '-100px'],
+          opacity: [1, 0],
+          duration: 1500,
+        });
+      }
 
     });
 
     return () => {
       scope?.current?.revert();
     };
-  }, []);
+  }, [pageIndex]);
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 gap-20 px-4 py-12 md:pl-48">
-      <div className='p-2 pt-20 md:pt-0 min-h-screen md:place-self-end md:place-content-center max-w-3xl'>
+    <div ref={root} className="grid grid-cols-1 md:grid-cols-2 gap-20 px-4 py-12 md:py-0 md:pl-48">
+      <div className='p-2 pt-20 md:pt-0 min-h-screen md:place-self-end md:place-content-center max-w-3xl about-container'>
         <h1
-          className="text-4xl font-bold bg-gradient-to-r from-white to-black bg-clip-text text-transparent opacity-70 py-4">
+          className="text-4xl font-bold bg-gradient-to-r from-white to-black bg-clip-text text-transparent opacity-70 py-4 md:text-6xl">
           About me
         </h1>
         <GlassContainer className="p-2">
@@ -120,19 +92,35 @@ function RouteComponent() {
             skills={skillsPm}
             date="2021 — Present"
             position='Lead Software Engineer'
-            company='ParkMobile LLC' />
+            company='ParkMobile LLC'
+            description={
+              isDesktop
+                ? 'Led the development of scalable web applications and implemented CI/CD pipelines.'
+                : undefined
+            }
+          />
           <hr className="border-t border-white/50" />
           <ExperienceText
             skills={skillsLf}
             date="2019 — 2021"
             position='Lead Full Stack Engineer'
-            company='Lightfeather LLC, USCIS' />
+            company='Lightfeather LLC, USCIS'
+            description={
+              isDesktop
+                ? 'Developed full-stack solutions for government projects, ensuring high security and performance.'
+                : undefined
+            } />
           <hr className="border-t border-white/50" />
           <ExperienceText
             skills={skillsCc}
             date="2018 — 2019"
             position='Front End Engineer'
-            company='Camelcase Studios LLC' />
+            company='Camelcase Studios LLC'
+            description={
+              isDesktop
+                ? 'Built responsive front-end interfaces and optimized performance for mobile applications.'
+                : undefined
+            } />
 
           <div className="flex justify-center p-4">
             <div className="p-[5px] rounded-lg bg-gradient-to-r from-[#BA68C8] to-[#EE9645] inline-block drop-shadow-md">
@@ -147,57 +135,7 @@ function RouteComponent() {
           </div>
         </GlassContainer>
       </div>
-      <div className="hidden md:flex justify-start items-center">
-        <div ref={root} className="min-h-screen flex items-center justify-center">
-          <div className="grid grid-cols-3 gap-6 place-items-start w-75">
-            {icons.map(({ id, icon, label }) => (
-              <div
-                key={id}
-                className={
-                  `w-15 
-              h-15 
-              relative
-              rounded-full 
-              border 
-              border-white/30 
-              bg-white/20 
-              backdrop-blur-lg 
-              shadow-lg 
-              flex 
-              items-center 
-              justify-center 
-              text-white 
-              overflow-visible
-              cursor-pointer
-              icon-bubble-${id}
-              `}
-                onMouseEnter={() => {
-                  scope?.current?.methods.enterIcon(`.icon-bubble-${id}`);
-                  setHoveredIcon(id)
-                }
-                }
-                onMouseLeave={() => {
-                  scope?.current?.methods.leaveIcon(`.icon-bubble-${id}`);
-                  setHoveredIcon(null)
-                }
-                }
-              >
-                {hoveredIcon !== id && (
-                  <div
-                    className={`text-3xl icon-${id}`}
-                  >
-                    {icon}
-                  </div>
-                )}
-
-                {hoveredIcon === id && (
-                  <span className="text-sm font-medium whitespace-nowrap m-20">{label}</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <SkillsPage isPageTwo={isDesktop} />
     </div>
   )
 }
