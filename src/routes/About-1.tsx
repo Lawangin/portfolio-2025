@@ -1,9 +1,9 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import GlassContainer from '@/components/GlassContainer'
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import ExperienceText from '@/components/ExperienceText'
-import { animate, createScope, Scope } from 'animejs';
+import { animate } from 'animejs';
 import { usePageContext } from '@/context/PageContext/PageContext'
 import { SkillsPage } from '@/components/SkillsPage/SkillsPage'
 
@@ -15,7 +15,6 @@ function RouteComponent() {
   const { pageIndex } = usePageContext();
   const isDesktop = window.innerWidth >= 768;
   const root = useRef<HTMLDivElement | null>(null);
-  const scope = useRef<Scope | null>(null);
 
   const skillsPm = [
     { name: 'React', color: 'bg-[#BA68C8]/60' },
@@ -49,33 +48,26 @@ function RouteComponent() {
   ]
 
   useEffect(() => {
-    scope.current = createScope({ root: root as React.RefObject<HTMLElement | SVGElement> }).add(scope => {
+    if (isDesktop && pageIndex === 2) {
+      animate('.about-container', {
+        y: ['50px', '0px'],
+        opacity: [0, 1],
+        duration: 1500,
+      });
+    } else if (pageIndex === 1.5) {
+      animate('.about-container', {
+        y: ['50px', '0px'],
+        opacity: [0, 1],
+        duration: 1500,
+      });
+    } else {
+      animate('.about-container', {
+        y: ['0px', '-50px'],
+        opacity: [1, 0],
+        duration: 1500,
+      });
+    }
 
-      if (isDesktop && pageIndex === 2) {
-        animate('.about-container', {
-          y: ['100px', '0px'],
-          opacity: [0, 1],
-          duration: 1500,
-        });
-      } else if (pageIndex === 1.5) {
-        animate('.about-container', {
-          y: ['100px', '0px'],
-          opacity: [0, 1],
-          duration: 1500,
-        });
-      } else {
-        animate('.about-container', {
-          y: ['0px', '-100px'],
-          opacity: [1, 0],
-          duration: 1500,
-        });
-      }
-
-    });
-
-    return () => {
-      scope?.current?.revert();
-    };
   }, [pageIndex]);
 
   return (

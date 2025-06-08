@@ -11,7 +11,7 @@ interface SkillButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
 const SkillButton = ({ skill, ...props }: SkillButtonProps) => {
   return (
     <Button
-    className={`rounded-md text-white font-normal ${skill.color} border border-white/60 px-4 py-2`}
+    className={`rounded-md text-white font-normal bg-[#BA68C8]/60 border border-white/60 px-4 py-2`}
     {...props}
   >
     {skill.name}

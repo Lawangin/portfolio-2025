@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import GlassContainer from '@/components/GlassContainer'
 import ScrollDownIndicator from '@/components/ScrollDownIndicator'
-import { animate, createScope, Scope } from 'animejs';
+import { animate } from 'animejs';
 import { usePageContext } from '@/context/PageContext/PageContext';
 
 export const Route = createFileRoute('/')({
@@ -14,35 +14,28 @@ export const Route = createFileRoute('/')({
 
 function App() {
   const root = useRef<HTMLDivElement | null>(null);
-  const scope = useRef<Scope | null>(null);
 
   const { pageIndex } = usePageContext();
 
   useEffect(() => {
-    scope.current = createScope({ root: root as React.RefObject<HTMLElement | SVGElement> }).add(scope => {
-      if (pageIndex !== 1) {
-        animate('.home-container', {
-          y: '-100px',
-          opacity: 0,
-          duration: 1500,
-        });
-      } else {
-        animate('.home-container', {
-          y: ['100px', '0px'],
-          opacity: [0, 1],
-          duration: 1500,
-        });
-      }
-    });
-
-    return () => {
-      scope?.current?.revert();
-    };
+    if (pageIndex !== 1) {
+      animate('.home-container', {
+        y: '-50px',
+        opacity: 0,
+        duration: 1500,
+      });
+    } else {
+      animate('.home-container', {
+        y: ['50px', '0px'],
+        opacity: [0, 1],
+        duration: 1500,
+      });
+    }
 
   }, [pageIndex]);
 
   return (
-    <div ref={root} className="min-h-screen px-4 py-12 grid justify-items-center pt-24 md:pt-24 md:pl-48">
+    <div ref={root} className="min-h-screen px-4 py-12 grid gap-6 justify-items-center pt-24 md:pt-24 md:pl-48">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl w-full h-full home-container">
         {/* Box 1: Top Left Metric - Hidden on Mobile */}
         <div className="hidden md:flex flex-col items-start justify-start p-4">
@@ -51,13 +44,13 @@ function App() {
         </div>
 
         {/* Box 2: Avatar with background ring */}
-        <div className="flex justify-center content-end items-center relative">
-          <div className="absolute w-40 h-40 lg:w-96 lg:h-96 md:w-80 md:h-80 rounded-full bg-white/20 border border-white/30 backdrop-blur-md" />
+        <div className="flex py-4 justify-center content-end items-center relative">
+          <div className="absolute w-40 h-40 lg:w-92 lg:h-92 md:w-60 md:h-60 rounded-full bg-white/20 border border-white/30 backdrop-blur-md" />
 
           <img
             src="/me.jpg"
             alt="Lawangin avatar"
-            className="w-32 h-32 lg:w-80 lg:h-80 md:w-64 md:h-64 rounded-full border-4 border-white/80 object-cover shadow-md relative z-10"
+            className="w-32 h-32 lg:w-80 lg:h-80 md:w-48 md:h-48 rounded-full border-4 border-white/80 object-cover shadow-md relative z-10"
           />
         </div>
 
