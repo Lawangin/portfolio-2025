@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { animate, createScope, Scope } from 'animejs';
+import { useEffect, useRef, useState } from 'react'
+import { animate, createScope, Scope } from 'animejs'
 import {
   SiTypescript,
   SiReact,
@@ -14,20 +14,19 @@ import {
   SiGraphql,
   SiGithub,
   SiPython,
-} from "react-icons/si";
-import { VscVscode } from "react-icons/vsc";
-import { FaJava } from "react-icons/fa";
+} from 'react-icons/si'
+import { VscVscode } from 'react-icons/vsc'
+import { FaJava } from 'react-icons/fa'
 
 interface SkillsPageProps {
-  isPageTwo: boolean;
+  isPageTwo: boolean
 }
 
-
 export const SkillsPage = ({ isPageTwo }: SkillsPageProps) => {
-  const root = useRef<HTMLDivElement | null>(null);
-  const scope = useRef<Scope | null>(null);
+  const root = useRef<HTMLDivElement | null>(null)
+  const scope = useRef<Scope | null>(null)
 
-  const [hoveredIcon, setHoveredIcon] = useState<number | null>(null);
+  const [hoveredIcon, setHoveredIcon] = useState<number | null>(null)
 
   const icons = [
     { id: 1, icon: <SiTypescript />, label: 'TypeScript' },
@@ -45,40 +44,42 @@ export const SkillsPage = ({ isPageTwo }: SkillsPageProps) => {
     { id: 13, icon: <SiGithub />, label: 'GitHub' },
     { id: 15, icon: <SiPython />, label: 'Python' },
     { id: 16, icon: <FaJava />, label: 'Java' },
-  ];
+  ]
 
   useEffect(() => {
-    scope.current = createScope({ root: root as React.RefObject<HTMLElement | SVGElement> }).add(scope => {
-
+    scope.current = createScope({
+      root: root as React.RefObject<HTMLElement | SVGElement>,
+    }).add((scope) => {
       scope.add('enterIcon', (selector: string) => {
         animate(selector, {
           width: '100px',
           duration: 300,
-        });
-
-      });
+        })
+      })
 
       scope.add('leaveIcon', (selector: string) => {
         animate(selector, {
           width: '60px',
           duration: 300,
-        });
-      });
-    });
+        })
+      })
+    })
 
     return () => {
-      scope?.current?.revert();
-    };
-  }, []);
+      scope?.current?.revert()
+    }
+  }, [])
 
   return (
-    <div ref={root} className={`${isPageTwo ? 'block' : 'hidden'} min-h-screen flex items-center justify-center about-container`}>
-      <div className="grid grid-cols-3 gap-6 place-items-start w-75">
+    <div
+      ref={root}
+      className={`${isPageTwo ? 'block' : 'hidden'} min-h-screen flex items-center justify-center about-container`}
+    >
+      <div className="grid grid-cols-3 gap-6 place-items-center w-75">
         {icons.map(({ id, icon, label }) => (
           <div
             key={id}
-            className={
-              `w-15 
+            className={`w-15 
               h-15 
               relative
               rounded-full 
@@ -96,30 +97,26 @@ export const SkillsPage = ({ isPageTwo }: SkillsPageProps) => {
               icon-bubble-${id}
               `}
             onMouseEnter={() => {
-              scope?.current?.methods.enterIcon(`.icon-bubble-${id}`);
+              scope?.current?.methods.enterIcon(`.icon-bubble-${id}`)
               setHoveredIcon(id)
-            }
-            }
+            }}
             onMouseLeave={() => {
-              scope?.current?.methods.leaveIcon(`.icon-bubble-${id}`);
+              scope?.current?.methods.leaveIcon(`.icon-bubble-${id}`)
               setHoveredIcon(null)
-            }
-            }
+            }}
           >
             {hoveredIcon !== id && (
-              <div
-                className={`text-3xl icon-${id}`}
-              >
-                {icon}
-              </div>
+              <div className={`text-3xl icon-${id}`}>{icon}</div>
             )}
 
             {hoveredIcon === id && (
-              <span className="text-sm font-medium whitespace-nowrap m-20">{label}</span>
+              <span className="text-sm font-medium whitespace-nowrap m-20">
+                {label}
+              </span>
             )}
           </div>
         ))}
       </div>
     </div>
-  );
+  )
 }
