@@ -23,47 +23,49 @@ function RouteComponent() {
   }
 
   return (
-    <div
-      ref={root}
-      className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 py-12 md:py-0 md:pl-48"
-    >
-      <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-black bg-clip-text text-transparent opacity-70 pt-15 md:text-6xl">
+    <div className="min-h-screen">
+      <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-black bg-clip-text text-transparent opacity-70 px-4 pt-24 md:pl-48 md:py-24 md:text-6xl">
         Projects
       </h1>
-      <GlassContainer className="p-2">
-        <ProjectCard
-          projecTitle={projectData.title}
-          projectDescription={projectData.description}
-          projectImage={projectData.image}
-          icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
-          demoLink={projectData.demoLink}
-          githubLink={projectData.githubLink}
-        />
-      </GlassContainer>
-      <GlassContainer className="p-2">
-        <ProjectCard
-          projecTitle={projectData.title}
-          projectDescription={projectData.description}
-          projectImage={projectData.image}
-          icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
-        />
-      </GlassContainer>
-      <GlassContainer className="p-2">
-        <ProjectCard
-          projecTitle={projectData.title}
-          projectDescription={projectData.description}
-          projectImage={projectData.image}
-          icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
-        />
-      </GlassContainer>
-      <GlassContainer className="p-2">
-        <ProjectCard
-          projecTitle={projectData.title}
-          projectDescription={projectData.description}
-          projectImage={projectData.image}
-          icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
-        />
-      </GlassContainer>
+      <div
+        ref={root}
+        className="grid grid-cols-1 md:grid-cols-4 gap-6 px-4 py-2 md:py-0 md:pl-48"
+      >
+        <GlassContainer className="p-2">
+          <ProjectCard
+            projectTitle={projectData.title}
+            projectDescription={projectData.description}
+            projectImage={projectData.image}
+            icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
+            demoLink={projectData.demoLink}
+            githubLink={projectData.githubLink}
+          />
+        </GlassContainer>
+        <GlassContainer className="p-2">
+          <ProjectCard
+            projectTitle={projectData.title}
+            projectDescription={projectData.description}
+            projectImage={projectData.image}
+            icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
+          />
+        </GlassContainer>
+        <GlassContainer className="p-2">
+          <ProjectCard
+            projectTitle={projectData.title}
+            projectDescription={projectData.description}
+            projectImage={projectData.image}
+            icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
+          />
+        </GlassContainer>
+        <GlassContainer className="p-2">
+          <ProjectCard
+            projectTitle={projectData.title}
+            projectDescription={projectData.description}
+            projectImage={projectData.image}
+            icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
+          />
+        </GlassContainer>
+      </div>
     </div>
   )
 }

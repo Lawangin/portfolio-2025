@@ -1,21 +1,21 @@
 import { useEffect, useRef } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import '../styles.css'
-import { Button } from '@/components/ui/button'
+import { ActionButton as Button } from '@/components/ActionButton'
 import { Label } from '@/components/ui/label'
 import GlassContainer from '@/components/GlassContainer'
 import ScrollDownIndicator from '@/components/ScrollDownIndicator'
-import { animate } from 'animejs';
-import { usePageContext } from '@/context/PageContext/PageContext';
+import { animate } from 'animejs'
+import { usePageContext } from '@/context/PageContext/PageContext'
 
 export const Route = createFileRoute('/')({
   component: App,
 })
 
 function App() {
-  const root = useRef<HTMLDivElement | null>(null);
+  const root = useRef<HTMLDivElement | null>(null)
 
-  const { pageIndex } = usePageContext();
+  const { pageIndex } = usePageContext()
 
   useEffect(() => {
     if (pageIndex !== 1) {
@@ -23,19 +23,21 @@ function App() {
         y: '-50px',
         opacity: 0,
         duration: 1500,
-      });
+      })
     } else {
       animate('.home-container', {
         y: ['50px', '0px'],
         opacity: [0, 1],
         duration: 1500,
-      });
+      })
     }
-
-  }, [pageIndex]);
+  }, [pageIndex])
 
   return (
-    <div ref={root} className="min-h-screen px-4 py-12 grid gap-6 justify-items-center pt-24 md:pt-24 md:pl-48">
+    <div
+      ref={root}
+      className="min-h-screen px-4 py-12 grid gap-6 justify-items-center pt-24 md:pt-24 md:pl-48"
+    >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl w-full h-full home-container">
         {/* Box 1: Top Left Metric - Hidden on Mobile */}
         <div className="hidden md:flex flex-col items-start justify-start p-4">
@@ -87,12 +89,10 @@ function App() {
           <div className="flex justify-center p-4">
             <div className="p-[5px] rounded-lg bg-gradient-to-r from-[#BA68C8] to-[#EE9645] inline-block drop-shadow-md">
               <Button
-                className="cursor-pointer w-full h-full rounded-md bg-[#0C1B3B]/80 backdrop-blur-lg text-white hover:bg-white/10 transition-all hover:text-black/80"
                 variant="ghost"
                 onClick={() => alert('HI There!')}
-              >
-                Get In Touch
-              </Button>
+                label="Get In Touch"
+              />
             </div>
           </div>
         </GlassContainer>

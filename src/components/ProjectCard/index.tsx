@@ -1,8 +1,9 @@
-import { IoLogoGithub, IoLogoJavascript, IoIosGlobe } from 'react-icons/io'
+import { IoLogoGithub, IoIosGlobe } from 'react-icons/io'
 import type { IconType } from 'react-icons/lib'
+import SkillButton from '../SkillButton'
 
 interface ProjectCardProps {
-  projecTitle: string
+  projectTitle: string
   projectDescription: string
   projectImage?: string
   icons?: IconType[]
@@ -11,24 +12,42 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard = ({
-  projecTitle,
+  projectTitle,
   projectDescription,
   projectImage,
   icons,
   demoLink,
   githubLink,
 }: ProjectCardProps) => {
+  const skills = [
+    { name: 'React', color: 'bg-[#BA68C8]/60' },
+    { name: 'TypeScript', color: 'bg-[#EE9645]/60' },
+    { name: 'AWS', color: 'bg-[#BA68C8]/60' },
+    { name: 'SQL', color: 'bg-[#EE9645]/60' },
+    { name: 'Grafana', color: 'bg-[#BA68C8]/60' },
+    { name: 'CSS', color: 'bg-[#EE9645]/60' },
+  ]
+
   return (
-    <div className="flex flex-col space-y-4 p-4">
-      <div className="flex items-center space-x-4">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#BA68C8] to-[#EE9645] flex items-center justify-center overflow-hidden">
+    <div className="flex flex-col p-4 md:space-y-0">
+      <div className="flex items-center space-x-4 md:flex-col md:items-start">
+        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#BA68C8] to-[#EE9645] flex items-center justify-center overflow-hidden md:rounded-md md:w-full md:h-48">
+          {/* potentially utilize object-cover for image  */}
           <img
             src={projectImage || '/LawanginKhanLOGO-01.svg'}
             alt="Project"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
         </div>
-        <h2 className="text-xl font-semibold text-white p-2">{projecTitle}</h2>
+        <h2 className="text-xl font-semibold text-white p-2 md:px-0">
+          {projectTitle}
+        </h2>
+      </div>
+
+      <div className="flex flex-wrap gap-2 h-0 w-0 invisible md:visible md:h-auto md:w-auto">
+        {skills.map((skill, index) => (
+          <SkillButton key={index} skill={skill} />
+        ))}
       </div>
 
       <p className="text-white/80 text-sm py-2">{projectDescription}</p>
