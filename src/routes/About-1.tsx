@@ -128,9 +128,12 @@ function RouteComponent() {
           />
         </GlassContainer>
 
-        <div className="flex justify-center p-4">
-          <ScrollIndicator label="Sroll to view skills" />
-        </div>
+        {!isDesktop && (
+          <div className="flex justify-center p-4">
+            <ScrollIndicator label="Sroll to view skills" />
+          </div>
+        )}
+
       </div>
       <SkillsPage isPageTwo={isDesktop} />
     </div>

@@ -147,7 +147,7 @@ function RouteComponent() {
         Contact
       </h1>
       {showInput ? (<div
-        className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 py-12 md:py-0 md:pl-48"
+        className="grid grid-cols-1 gap-6 px-4 py-12 md:place-items-center"
       >
         <Form {...form}>
           <form
@@ -161,7 +161,7 @@ function RouteComponent() {
                 <FormItem>
                   <FormLabel>{step.toUpperCase()}</FormLabel>
                   <FormControl>
-                    <div className="flex items-center gap-2 relative">
+                    <div className="flex items-center gap-2 relative md:min-w-100">
                       {step === 'message' ? (
                         <textarea
                           className="text-black min-h-[100px] w-full p-2 border rounded resize-none bg-white"
@@ -195,7 +195,7 @@ function RouteComponent() {
         </Form>
         
       </div>) : null}
-      <section className={`px-4 ${step === 'message' ? 'py-12' : 'py-0'}`}>
+      <section className={`px-4 ${step === 'message' ? 'py-12' : 'py-0'} md:place-self-center`}>
           <div className="flex place-content-between items-start text-white/80 bg-white/10 p-6 rounded-lg shadow-lg w-full opacity-0 contact-toast">
             <p className="text-lg">{toastMessage}</p>
             <IoIosCheckmarkCircle className="w-8 h-8 text-green-500" />

@@ -13,6 +13,7 @@ export const Route = createFileRoute('/Projects-1')({
 
 function RouteComponent() {
   const root = useRef<HTMLDivElement | null>(null)
+  const isDesktop = window.innerWidth >= 768
 
   const { pageIndex } = usePageContext()
 
@@ -28,7 +29,14 @@ function RouteComponent() {
   }
 
   useEffect(() => {
-        if (pageIndex === 2.5) {
+    if (isDesktop && pageIndex === 3) {
+      animate('.projects-container', {
+        y: ['50px', '0px'],
+        opacity: [0, 1],
+        duration: 1500,
+      })
+    }
+    else if (pageIndex === 2.5) {
       animate('.projects-container', {
         y: ['50px', '0px'],
         opacity: [0, 1],
@@ -70,10 +78,29 @@ function RouteComponent() {
             icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
           />
         </GlassContainer>
+        {isDesktop && (
+          <><GlassContainer className="p-2">
+            <ProjectCard
+              projectTitle={projectData.title}
+              projectDescription={projectData.description}
+              projectImage={projectData.image}
+              icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
+              demoLink={projectData.demoLink}
+              githubLink={projectData.githubLink} />
+          </GlassContainer><GlassContainer className="p-2">
+              <ProjectCard
+                projectTitle={projectData.title}
+                projectDescription={projectData.description}
+                projectImage={projectData.image}
+                icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]} />
+            </GlassContainer></>
+        )}
       </div>
-              <div className="flex justify-center p-4">
+      {!isDesktop && (
+        <div className="flex justify-center p-4">
           <ScrollIndicator label="Scroll to view more projects" />
         </div>
+      )}
     </div>
   )
 }
