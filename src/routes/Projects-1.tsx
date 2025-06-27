@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import GlassContainer from '@/components/GlassContainer'
 import { IoLogoJavascript, IoLogoGithub, IoIosGlobe } from 'react-icons/io'
 import { ProjectCard } from '@/components/ProjectCard'
 import { animate } from 'animejs'
 import { usePageContext } from '@/context/PageContext/PageContext'
-import SkillIndicator from '@/components/SkillIndicator'
+import ScrollIndicator from '@/components/ScrollIndicator'
 
 export const Route = createFileRoute('/Projects-1')({
   component: RouteComponent,
@@ -13,9 +13,8 @@ export const Route = createFileRoute('/Projects-1')({
 
 function RouteComponent() {
   const root = useRef<HTMLDivElement | null>(null)
-  const router = useRouter()
 
-  const { pageIndex, setPageIndex } = usePageContext()
+  const { pageIndex } = usePageContext()
 
   const projectData = {
     title: 'Travel App',
@@ -73,12 +72,7 @@ function RouteComponent() {
         </GlassContainer>
       </div>
               <div className="flex justify-center p-4">
-          <SkillIndicator label="More Projects" onClick={() => {
-            setPageIndex(3);
-            setTimeout(() => {
-              router.navigate({ to: '/Projects-2' });
-            }, 1000);
-          }} />
+          <ScrollIndicator label="Scroll to view more projects" />
         </div>
     </div>
   )

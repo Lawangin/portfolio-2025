@@ -15,8 +15,6 @@ function RouteComponent() {
 
   const { pageIndex } = usePageContext()
 
-  console.log('Projects pageIndex:', pageIndex)
-
   const projectData = {
     title: 'Travel App',
     description: `This is a detailed description of the project. It explains the

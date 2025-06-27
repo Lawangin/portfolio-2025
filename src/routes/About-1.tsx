@@ -1,22 +1,21 @@
 import { useRef, useEffect } from 'react'
 import GlassContainer from '@/components/GlassContainer'
 import { ActionButton as Button } from '@/components/ActionButton'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import ExperienceText from '@/components/ExperienceText'
 import { animate } from 'animejs'
 import { usePageContext } from '@/context/PageContext/PageContext'
 import { SkillsPage } from '@/components/SkillsPage/SkillsPage'
-import SkillIndicator from '@/components/SkillIndicator'
+import ScrollIndicator from '@/components/ScrollIndicator'
 
 export const Route = createFileRoute('/About-1')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { pageIndex, setPageIndex } = usePageContext()
+  const { pageIndex } = usePageContext()
   const isDesktop = window.innerWidth >= 768
   const root = useRef<HTMLDivElement | null>(null)
-  const router = useRouter()
 
   const skillsPm = [
     { name: 'React', color: 'bg-[#BA68C8]/60' },
@@ -130,12 +129,7 @@ function RouteComponent() {
         </GlassContainer>
 
         <div className="flex justify-center p-4">
-          <SkillIndicator label="View Skills" onClick={() => {
-            setPageIndex(2);
-            setTimeout(() => {
-              router.navigate({ to: '/About-2' });
-            }, 1000);
-          }} />
+          <ScrollIndicator label="Sroll to view skills" />
         </div>
       </div>
       <SkillsPage isPageTwo={isDesktop} />
