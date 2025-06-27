@@ -12,7 +12,7 @@ interface SkillButtonProps
 const SkillButton = ({ skill, ...props }: SkillButtonProps) => {
   return (
     <Button
-      className={`rounded-md text-white font-normal bg-[#EE9645]/60 border border-white/60 px-4 py-2`}
+      className={`rounded-md text-white text-xs font-normal bg-[#EE9645]/60 border border-white/60 px-2`}
       {...props}
     >
       {skill.name}

@@ -1,8 +1,11 @@
-import { useRef } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { useEffect, useRef } from 'react'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 import GlassContainer from '@/components/GlassContainer'
 import { IoLogoJavascript, IoLogoGithub, IoIosGlobe } from 'react-icons/io'
 import { ProjectCard } from '@/components/ProjectCard'
+import { animate } from 'animejs'
+import { usePageContext } from '@/context/PageContext/PageContext'
+import SkillIndicator from '@/components/SkillIndicator'
 
 export const Route = createFileRoute('/Projects-1')({
   component: RouteComponent,
@@ -10,6 +13,9 @@ export const Route = createFileRoute('/Projects-1')({
 
 function RouteComponent() {
   const root = useRef<HTMLDivElement | null>(null)
+  const router = useRouter()
+
+  const { pageIndex, setPageIndex } = usePageContext()
 
   const projectData = {
     title: 'Travel App',
@@ -22,8 +28,24 @@ function RouteComponent() {
     githubLink: 'https://github.com/Lawangin/portfolio-2025',
   }
 
+  useEffect(() => {
+        if (pageIndex === 2.5) {
+      animate('.projects-container', {
+        y: ['50px', '0px'],
+        opacity: [0, 1],
+        duration: 1500,
+      })
+    } else {
+      animate('.projects-container', {
+        y: ['0px', '-50px'],
+        opacity: [1, 0],
+        duration: 1500,
+      })
+    }
+  }, [pageIndex])
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen projects-container">
       <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-black bg-clip-text text-transparent opacity-70 px-4 pt-24 md:pl-48 md:py-24 md:text-6xl">
         Projects
       </h1>
@@ -49,23 +71,15 @@ function RouteComponent() {
             icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
           />
         </GlassContainer>
-        <GlassContainer className="p-2">
-          <ProjectCard
-            projectTitle={projectData.title}
-            projectDescription={projectData.description}
-            projectImage={projectData.image}
-            icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
-          />
-        </GlassContainer>
-        <GlassContainer className="p-2">
-          <ProjectCard
-            projectTitle={projectData.title}
-            projectDescription={projectData.description}
-            projectImage={projectData.image}
-            icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
-          />
-        </GlassContainer>
       </div>
+              <div className="flex justify-center p-4">
+          <SkillIndicator label="More Projects" onClick={() => {
+            setPageIndex(3);
+            setTimeout(() => {
+              router.navigate({ to: '/Projects-2' });
+            }, 1000);
+          }} />
+        </div>
     </div>
   )
 }

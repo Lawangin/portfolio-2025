@@ -22,7 +22,7 @@ const ExperienceText = ({ skills, date, position, company, description }: Experi
             {description && (
                 <p className='text-sm font-normal opacity-70'>{description}</p>
             )}
-            <div className="flex flex-wrap gap-1 mt-4 py-2">
+            <div className="flex flex-wrap gap-1 mt-2 py-2">
                 {skills.map((skill, index) => (
                     <SkillButton key={index} skill={skill} />
                 ))}

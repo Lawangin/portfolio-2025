@@ -4,7 +4,6 @@ import '../styles.css'
 import { ActionButton as Button } from '@/components/ActionButton'
 import { Label } from '@/components/ui/label'
 import GlassContainer from '@/components/GlassContainer'
-import ScrollDownIndicator from '@/components/ScrollDownIndicator'
 import { animate } from 'animejs'
 import { usePageContext } from '@/context/PageContext/PageContext'
 
@@ -97,7 +96,6 @@ function App() {
           </div>
         </GlassContainer>
       </div>
-      <ScrollDownIndicator />
     </div>
   )
 }

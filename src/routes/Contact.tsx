@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import {
   Form,
@@ -14,6 +14,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { IoIosArrowForward, IoIosCheckmarkCircle } from 'react-icons/io'
+import { animate } from 'animejs'
+import { usePageContext } from '@/context/PageContext/PageContext'
 
 export const Route = createFileRoute('/Contact')({
   component: RouteComponent,
@@ -23,6 +25,11 @@ function RouteComponent() {
   const [step, setStep] = useState<'name' | 'email' | 'message'>('name')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [showInput, setShowInput] = useState(true)
+  const [toastMessage, setToastMessage] = useState('')
+
+  const { pageIndex } = usePageContext()
+
 
   const root = useRef<HTMLDivElement | null>(null)
 
@@ -57,17 +64,25 @@ function RouteComponent() {
   })
 
   function handleNext(values: z.infer<typeof formSchema>) {
-    if (step === 'name') {
-      setName(values.currentValue)
+  if (step === 'name') {
+    setName(values.currentValue)
+    animateToast(`Nice to meet you, ${values.currentValue}!`)
+    setTimeout(() => {
       setStep('email')
       form.reset({ currentValue: '' })
-    } else if (step === 'email') {
-      setEmail(values.currentValue)
+    }, 1800)
+  } else if (step === 'email') {
+    setEmail(values.currentValue)
+    animateToast(`We’ll respond to you at ${values.currentValue}!`)
+    setTimeout(() => {
       setStep('message')
       form.reset({ currentValue: '' })
-    } else if (step === 'message') {
-      handleSubmitForm(name, email, values.currentValue)
-    }
+    }, 1800)
+  } else if (step === 'message') {
+    handleSubmitForm(name, email, values.currentValue)
+    setShowInput(false)
+    animateToast(`Message received!`, true)
+  }
   }
 
   const generatePlaceholder = () => {
@@ -88,13 +103,50 @@ function RouteComponent() {
     console.log('API Call:', { name, email, message })
   }
 
+  function animateToast(message: string, keepVisible = false) {
+  setToastMessage(message)
+
+  animate('.contact-toast',{
+    opacity: [0, 1],
+    duration: 300,
+    easing: 'easeInOutQuad',
+    complete: () => {
+      if (!keepVisible) {
+        setTimeout(() => {
+          animate('.contact-toast',{
+            opacity: [1, 0],
+            duration: 300,
+            easing: 'easeInOutQuad',
+          })
+        }, 1500)
+      }
+    },
+  })
+}
+
+  useEffect(() => {
+    if (pageIndex === 4) {
+      animate('.contact-container', {
+        y: ['50px', '0px'],
+        opacity: [0, 1],
+        duration: 1500,
+      })
+    } else {
+      animate('.contact-container', {
+        y: ['0px', '-50px'],
+        opacity: [1, 0],
+        duration: 1500,
+      })
+    }
+  }, [pageIndex])
+
+
   return (
-    <div className="min-h-screen">
+    <div ref={root} className="min-h-screen contact-container">
       <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-black bg-clip-text text-transparent opacity-70 px-4 pt-24 md:pl-48 md:py-24 md:text-6xl">
         Contact
       </h1>
-      <div
-        ref={root}
+      {showInput ? (<div
         className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 py-12 md:py-0 md:pl-48"
       >
         <Form {...form}>
@@ -107,18 +159,18 @@ function RouteComponent() {
               name={'currentValue'}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>{step.toUpperCase()}</FormLabel>
                   <FormControl>
                     <div className="flex items-center gap-2 relative">
                       {step === 'message' ? (
                         <textarea
-                          className="text-white min-h-[100px] w-full p-2 border rounded resize-none"
+                          className="text-black min-h-[100px] w-full p-2 border rounded resize-none bg-white"
                           placeholder="What would you like to say?"
                           {...field}
                         />
                       ) : (
                         <Input
-                          className="text-white"
+                          className="text-black bg-white"
                           placeholder={generatePlaceholder()}
                           type={step === 'email' ? 'email' : 'text'}
                           {...field}
@@ -141,23 +193,14 @@ function RouteComponent() {
             />
           </form>
         </Form>
-        <section>
-          <div className="flex place-content-between items-start text-white/80 bg-white/10 p-6 rounded-lg shadow-lg w-full">
-            <p className="text-lg">Nice to meet you {name ? name : ''}!</p>
-            <IoIosCheckmarkCircle className="w-8 h-8 text-green-500" />
-          </div>
-          <div className="flex place-content-between items-start text-white/80 bg-white/10 p-6 rounded-lg shadow-lg w-full">
-            <p className="text-lg">
-              We will respond to you at {email ? email : ''}!
-            </p>
-            <IoIosCheckmarkCircle className="w-8 h-8 text-green-500" />
-          </div>
-          <div className="flex place-content-between items-start text-white/80 bg-white/10 p-6 rounded-lg shadow-lg w-full">
-            <p className="text-lg">Message received!</p>
+        
+      </div>) : null}
+      <section className={`px-4 ${step === 'message' ? 'py-12' : 'py-0'}`}>
+          <div className="flex place-content-between items-start text-white/80 bg-white/10 p-6 rounded-lg shadow-lg w-full opacity-0 contact-toast">
+            <p className="text-lg">{toastMessage}</p>
             <IoIosCheckmarkCircle className="w-8 h-8 text-green-500" />
           </div>
         </section>
-      </div>
     </div>
   )
 }

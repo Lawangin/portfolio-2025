@@ -1,20 +1,22 @@
 import { useRef, useEffect } from 'react'
 import GlassContainer from '@/components/GlassContainer'
 import { ActionButton as Button } from '@/components/ActionButton'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 import ExperienceText from '@/components/ExperienceText'
 import { animate } from 'animejs'
 import { usePageContext } from '@/context/PageContext/PageContext'
 import { SkillsPage } from '@/components/SkillsPage/SkillsPage'
+import SkillIndicator from '@/components/SkillIndicator'
 
 export const Route = createFileRoute('/About-1')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { pageIndex } = usePageContext()
+  const { pageIndex, setPageIndex } = usePageContext()
   const isDesktop = window.innerWidth >= 768
   const root = useRef<HTMLDivElement | null>(null)
+  const router = useRouter()
 
   const skillsPm = [
     { name: 'React', color: 'bg-[#BA68C8]/60' },
@@ -72,14 +74,23 @@ function RouteComponent() {
   return (
     <div
       ref={root}
-      className="grid grid-cols-1 md:grid-cols-2 gap-20 px-4 py-12 md:py-0 md:pl-48"
+      className="grid grid-cols-1 md:grid-cols-2 gap-20 px-4 md:py-0 md:pl-48"
     >
       <div className="p-2 pt-20 md:pt-0 min-h-screen md:place-self-end md:place-content-center max-w-3xl about-container">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-black bg-clip-text text-transparent opacity-70 py-4 md:text-6xl">
           About me
         </h1>
         <GlassContainer className="p-2">
-          <p className="text-2xl font-medium py-2">Experience</p>
+          <div className="flex gap-2 place-content-between pb-2">
+            <p className="text-2xl font-medium py-2">Experience</p>
+            <div className="p-[5px] rounded-lg bg-gradient-to-r from-[#BA68C8] to-[#EE9645] inline-block drop-shadow-md">
+              <Button
+                variant="ghost"
+                onClick={() => alert('HI There!')}
+                label="Download CV"
+              />
+            </div>
+          </div>
           <hr className="border-t border-white/50" />
           <ExperienceText
             skills={skillsPm}
@@ -116,17 +127,16 @@ function RouteComponent() {
                 : undefined
             }
           />
-
-          <div className="flex justify-center p-4">
-            <div className="p-[5px] rounded-lg bg-gradient-to-r from-[#BA68C8] to-[#EE9645] inline-block drop-shadow-md">
-              <Button
-                variant="ghost"
-                onClick={() => alert('HI There!')}
-                label="Download CV"
-              />
-            </div>
-          </div>
         </GlassContainer>
+
+        <div className="flex justify-center p-4">
+          <SkillIndicator label="View Skills" onClick={() => {
+            setPageIndex(2);
+            setTimeout(() => {
+              router.navigate({ to: '/About-2' });
+            }, 1000);
+          }} />
+        </div>
       </div>
       <SkillsPage isPageTwo={isDesktop} />
     </div>
