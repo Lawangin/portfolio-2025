@@ -28,7 +28,7 @@ function RouteComponent() {
   const [showInput, setShowInput] = useState(true)
   const [toastMessage, setToastMessage] = useState('')
 
-  const { pageIndex } = usePageContext()
+  const { pageTitle } = usePageContext()
 
 
   const root = useRef<HTMLDivElement | null>(null)
@@ -64,25 +64,25 @@ function RouteComponent() {
   })
 
   function handleNext(values: z.infer<typeof formSchema>) {
-  if (step === 'name') {
-    setName(values.currentValue)
-    animateToast(`Nice to meet you, ${values.currentValue}!`)
-    setTimeout(() => {
-      setStep('email')
-      form.reset({ currentValue: '' })
-    }, 1800)
-  } else if (step === 'email') {
-    setEmail(values.currentValue)
-    animateToast(`We’ll respond to you at ${values.currentValue}!`)
-    setTimeout(() => {
-      setStep('message')
-      form.reset({ currentValue: '' })
-    }, 1800)
-  } else if (step === 'message') {
-    handleSubmitForm(name, email, values.currentValue)
-    setShowInput(false)
-    animateToast(`Message received!`, true)
-  }
+    if (step === 'name') {
+      setName(values.currentValue)
+      animateToast(`Nice to meet you, ${values.currentValue}!`)
+      setTimeout(() => {
+        setStep('email')
+        form.reset({ currentValue: '' })
+      }, 1800)
+    } else if (step === 'email') {
+      setEmail(values.currentValue)
+      animateToast(`We’ll respond to you at ${values.currentValue}!`)
+      setTimeout(() => {
+        setStep('message')
+        form.reset({ currentValue: '' })
+      }, 1800)
+    } else if (step === 'message') {
+      handleSubmitForm(name, email, values.currentValue)
+      setShowInput(false)
+      animateToast(`Message received!`, true)
+    }
   }
 
   const generatePlaceholder = () => {
@@ -104,28 +104,28 @@ function RouteComponent() {
   }
 
   function animateToast(message: string, keepVisible = false) {
-  setToastMessage(message)
+    setToastMessage(message)
 
-  animate('.contact-toast',{
-    opacity: [0, 1],
-    duration: 300,
-    easing: 'easeInOutQuad',
-    complete: () => {
-      if (!keepVisible) {
-        setTimeout(() => {
-          animate('.contact-toast',{
-            opacity: [1, 0],
-            duration: 300,
-            easing: 'easeInOutQuad',
-          })
-        }, 1500)
-      }
-    },
-  })
-}
+    animate('.contact-toast', {
+      opacity: [0, 1],
+      duration: 300,
+      easing: 'easeInOutQuad',
+      complete: () => {
+        if (!keepVisible) {
+          setTimeout(() => {
+            animate('.contact-toast', {
+              opacity: [1, 0],
+              duration: 300,
+              easing: 'easeInOutQuad',
+            })
+          }, 1500)
+        }
+      },
+    })
+  }
 
   useEffect(() => {
-    if (pageIndex === 4) {
+    if (pageTitle === 'Contact Me') {
       animate('.contact-container', {
         y: ['50px', '0px'],
         opacity: [0, 1],
@@ -138,7 +138,7 @@ function RouteComponent() {
         duration: 1500,
       })
     }
-  }, [pageIndex])
+  }, [pageTitle])
 
 
   return (
@@ -193,14 +193,14 @@ function RouteComponent() {
             />
           </form>
         </Form>
-        
+
       </div>) : null}
       <section className={`px-4 ${step === 'message' ? 'py-12' : 'py-0'} md:place-self-center`}>
-          <div className="flex place-content-between items-start text-white/80 bg-white/10 p-6 rounded-lg shadow-lg w-full opacity-0 contact-toast">
-            <p className="text-lg">{toastMessage}</p>
-            <IoIosCheckmarkCircle className="w-8 h-8 text-green-500" />
-          </div>
-        </section>
+        <div className="flex place-content-between items-start text-white/80 bg-white/10 p-6 rounded-lg shadow-lg w-full opacity-0 contact-toast">
+          <p className="text-lg">{toastMessage}</p>
+          <IoIosCheckmarkCircle className="w-8 h-8 text-green-500" />
+        </div>
+      </section>
     </div>
   )
 }

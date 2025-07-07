@@ -15,7 +15,7 @@ function RouteComponent() {
   const root = useRef<HTMLDivElement | null>(null)
   const isDesktop = window.innerWidth >= 768
 
-  const { pageIndex } = usePageContext()
+  const { pageTitle } = usePageContext()
 
   const projectData = {
     title: 'Travel App',
@@ -29,14 +29,14 @@ function RouteComponent() {
   }
 
   useEffect(() => {
-    if (isDesktop && pageIndex === 3) {
+    if (isDesktop && (pageTitle === 'Projects')) {
       animate('.projects-container', {
         y: ['50px', '0px'],
         opacity: [0, 1],
         duration: 1500,
       })
     }
-    else if (pageIndex === 2.5) {
+    else if (pageTitle === 'Projects Part 1') {
       animate('.projects-container', {
         y: ['50px', '0px'],
         opacity: [0, 1],
@@ -49,7 +49,7 @@ function RouteComponent() {
         duration: 1500,
       })
     }
-  }, [pageIndex])
+  }, [pageTitle])
 
   return (
     <div className="min-h-screen projects-container">

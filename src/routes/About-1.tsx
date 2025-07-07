@@ -13,7 +13,7 @@ export const Route = createFileRoute('/About-1')({
 })
 
 function RouteComponent() {
-  const { pageIndex } = usePageContext()
+  const { pageTitle } = usePageContext()
   const isDesktop = window.innerWidth >= 768
   const root = useRef<HTMLDivElement | null>(null)
 
@@ -49,26 +49,26 @@ function RouteComponent() {
   ]
 
   useEffect(() => {
-    if (isDesktop && pageIndex === 2) {
+    if (isDesktop && (pageTitle === 'About Me')) {
       animate('.about-container', {
-        y: ['50px', '0px'],
+        y: ['25px', '0px'],
         opacity: [0, 1],
         duration: 1500,
       })
-    } else if (pageIndex === 1.5) {
+    } else if (pageTitle === 'About Me Part 1') {
       animate('.about-container', {
-        y: ['50px', '0px'],
+        y: ['25px', '0px'],
         opacity: [0, 1],
         duration: 1500,
       })
     } else {
       animate('.about-container', {
-        y: ['0px', '-50px'],
+        y: ['0px', '-25px'],
         opacity: [1, 0],
         duration: 1500,
       })
     }
-  }, [pageIndex])
+  }, [pageTitle])
 
   return (
     <div
@@ -83,11 +83,16 @@ function RouteComponent() {
           <div className="flex gap-2 place-content-between pb-2">
             <p className="text-2xl font-medium py-2">Experience</p>
             <div className="p-[5px] rounded-lg bg-gradient-to-r from-[#BA68C8] to-[#EE9645] inline-block drop-shadow-md">
-              <Button
-                variant="ghost"
-                onClick={() => alert('HI There!')}
-                label="Download CV"
-              />
+              <a
+                href="/Lawangin_CV.pdf"
+                download="Lawangin_CV.pdf"
+                className="cursor-pointer"
+              >
+                <Button
+                  variant="ghost"
+                  label="Download CV"
+                />
+              </a>
             </div>
           </div>
           <hr className="border-t border-white/50" />

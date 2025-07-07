@@ -9,6 +9,7 @@ interface INavProps {
 }
 
 const NavBarDesktop = ({ className }: INavProps) => {
+  const { pageIndex, setPageTitle } = usePageContext()
   const router = useRouter()
 
   const root = useRef<HTMLDivElement | null>(null)
@@ -16,14 +17,13 @@ const NavBarDesktop = ({ className }: INavProps) => {
   const circleActiveRef = useRef<HTMLDivElement | null>(null)
   const circleStartRef = useRef<HTMLDivElement | null>(null)
 
-  const [activeIcon, setActiveIcon] = useState<number>(1)
-  const [circleActiveTop, setCircleActiveTop] = useState<number>(0)
+  const [activeIcon, setActiveIcon] = useState<number>(pageIndex)
+  const [circleActiveTop, setCircleActiveTop] = useState<number>(332.5)
 
   // Track touch positions
   const touchStartY = useRef<number>(0)
   const touchEndY = useRef<number>(0)
 
-  const { pageIndex, setPageIndex, setPageTitle } = usePageContext()
 
   const getActiveCirclePosition = () => {
     if (circleActiveRef.current) {
@@ -32,15 +32,30 @@ const NavBarDesktop = ({ className }: INavProps) => {
     }
   }
 
-  const getFirstCirclePosition = () => {
-    if (circleStartRef.current) {
-      const rect = circleStartRef.current.getBoundingClientRect()
+  const getFirstCirclePosition = (targetIndex?: number) => {
+    const indexToUse = targetIndex || pageIndex
+
+    // Get the circle element based on the specified index
+    const activeCircleElement = root.current?.querySelector(`.circle-${indexToUse}`) as HTMLElement
+
+    if (activeCircleElement) {
+      const rect = activeCircleElement.getBoundingClientRect()
+      const containerRect = root.current?.getBoundingClientRect()
+
+      if (containerRect) {
+        return rect.top - containerRect.top
+      }
+
       return rect.top
     }
-    return 0
+
+    // Fallback calculation based on the specified index
+    return (indexToUse - 1) * 70
   }
 
   const handleClick = (iconIndex: number) => {
+    if (activeIcon === iconIndex) return
+
     if (activeIcon !== iconIndex) {
       scope?.current?.methods.animateInactive(`.circle-${activeIcon}`)
     }
@@ -48,78 +63,19 @@ const NavBarDesktop = ({ className }: INavProps) => {
 
     scope?.current?.methods.animateActiveBlob(
       iconIndex,
-      iconIndex === activeIcon,
+      false,
     )
     scope?.current?.methods.animateActive(`.circle-${iconIndex}`)
 
-    setPageIndex(iconIndex)
-    switch (iconIndex) {
-      case 2:
-        setPageTitle('About Me')
-        break
-      case 3:
-        setPageTitle('Projects')
-        break
-      case 4:
-        setPageTitle('Contact Me')
-        break
-      default:
-        setPageTitle('Home')
+    // setPageIndex(iconIndex)
+    const titleMap: Record<number, string> = {
+      1: 'Home',
+      2: 'About Me',
+      3: 'Projects',
+      4: 'Contact Me',
     }
+    setPageTitle(titleMap[iconIndex])
   }
-
-  useEffect(() => {
-    // Set the initial position of circle-active after the DOM is mounted
-    const initialTop = getFirstCirclePosition()
-    setCircleActiveTop(initialTop - 20)
-
-    const pathToIndexMap: Record<string, number> = {
-      '/': 1,
-      '/about-1': 2,
-      '/projects-1': 3,
-      '/contact': 4,
-    }
-
-    const currentPath = router.state.location.pathname
-    const matchedIndex = pathToIndexMap[currentPath]
-
-    if (matchedIndex) {
-      setActiveIcon(matchedIndex)
-      setPageIndex(matchedIndex)
-
-      // Set correct page title
-      switch (matchedIndex) {
-        case 1:
-          setPageTitle('Home')
-          break
-        case 2:
-          setPageTitle('About Me')
-          break
-        case 3:
-          setPageTitle('Projects')
-          break
-        case 4:
-          setPageTitle('Contact Me')
-          break
-      }
-
-      setTimeout(() => {
-        // Optional: deactivate previous icon if coming from a different route
-        const prevCircle = matchedIndex > 1 ? matchedIndex - 1 : null
-
-        if (prevCircle) {
-          scope.current?.methods.animateInactive(`.circle-${prevCircle}`)
-        }
-
-        scope.current?.methods.animateActiveBlob(
-          matchedIndex,
-          true, // indexSimilar
-        )
-
-        scope.current?.methods.animateActive(`.circle-${matchedIndex}`)
-      }, 50)
-    }
-  }, [])
 
   useEffect(() => {
     scope.current = createScope({
@@ -129,13 +85,10 @@ const NavBarDesktop = ({ className }: INavProps) => {
         scale: 2,
       })
 
-      animate(`.circle-${pageIndex}`, {
-        width: '50px',
-        height: '50px',
-      })
-
       scope.add('animateActiveBlob', (iconIndex, indexSimilar) => {
-        const topValue = circleActiveTop + (iconIndex - 1) * 70
+        const topValue = 332.5 + (iconIndex - 1) * 70
+
+        // const topValue = circleActiveTop + (iconIndex - 1) * 70
         const currentActiveTopValue = getActiveCirclePosition()!
         const scaleYKeyFrames = [2, 1, 2, 2]
         const scaleXKeyFrames = [2, 1, 1, 2]
@@ -151,12 +104,13 @@ const NavBarDesktop = ({ className }: INavProps) => {
 
         const pageMap: Record<number, string> = {
           1: '/',
-          2: '/about-1',
-          3: '/projects-1',
-          4: '/contact',
+          2: '/About-1',
+          3: '/Projects-1',
+          4: '/Contact',
         }
 
         const path = pageMap[iconIndex]
+        if (router.state.location.pathname === path && !indexSimilar) return
 
         waapi.animate('.circle-active', {
           top: `${topValue}px`,
@@ -164,7 +118,7 @@ const NavBarDesktop = ({ className }: INavProps) => {
           scaleX: scaleX,
           ease: createSpring({ stiffness: 70 }),
           onComplete: () => {
-            if (path) {
+            if (path && router.state.location.pathname !== path) {
               router.navigate({ to: path, replace: false })
             }
           },
@@ -206,16 +160,62 @@ const NavBarDesktop = ({ className }: INavProps) => {
         })
       })
     })
+
+    const pathToIndexMap: Record<string, number> = {
+      '/': 1,
+      '/About-1': 2,
+      '/Projects-1': 3,
+      '/Contact': 4,
+    }
+
+
+    const currentPath = router.state.location.pathname
+    const matchedIndex = pathToIndexMap[currentPath]
+
+    if (matchedIndex) {
+      setActiveIcon(matchedIndex)
+
+      // Set the initial position of circle-active after the DOM is mounted
+      const initialTop = getFirstCirclePosition(matchedIndex)
+      setCircleActiveTop(initialTop - 20)
+
+      // Set correct page title
+      switch (matchedIndex) {
+        case 1:
+          setPageTitle('Home')
+          break
+        case 2:
+          setPageTitle('About Me')
+          break
+        case 3:
+          setPageTitle('Projects')
+          break
+        case 4:
+          setPageTitle('Contact Me')
+          break
+      }
+
+      // Reset ALL circles to inactive state first
+      for (let i = 1; i <= 4; i++) {
+        if (i !== matchedIndex) {
+          scope.current?.methods.animateInactive(`.circle-${i}`)
+        }
+      }
+
+      scope.current?.methods.animateActiveBlob(
+        matchedIndex,
+        true, // indexSimilar
+      )
+
+      scope.current?.methods.animateActive(`.circle-${matchedIndex}`)
+
+    }
     return () => scope?.current?.revert()
-  }, [circleActiveTop])
+  }, [circleActiveTop, pageIndex])
 
   const scrollSteps = [1, 2, 3, 4]
 
   useEffect(() => {
-    const SCROLL_THRESHOLD = 120 // Adjust this value as needed
-    let scrollBuffer = 0
-    let isScrolling = false
-
     const getNextStep = (current: number, direction: 'up' | 'down') => {
       const currentIndex = scrollSteps.indexOf(current)
       if (currentIndex === -1) return current
@@ -228,29 +228,6 @@ const NavBarDesktop = ({ className }: INavProps) => {
       }
 
       return current
-    }
-
-    const resetScroll = () => {
-      scrollBuffer = 0
-      isScrolling = false
-    }
-
-    const handleWheel = (event: WheelEvent) => {
-      scrollBuffer += event.deltaY
-
-      if (isScrolling) return
-
-      if (scrollBuffer > SCROLL_THRESHOLD) {
-        isScrolling = true
-        const next = getNextStep(activeIcon, 'down')
-        if (next !== activeIcon) handleClick(next)
-        setTimeout(resetScroll, 600) // adjust for animation duration
-      } else if (scrollBuffer < -SCROLL_THRESHOLD) {
-        isScrolling = true
-        const next = getNextStep(activeIcon, 'up')
-        if (next !== activeIcon) handleClick(next)
-        setTimeout(resetScroll, 600)
-      }
     }
 
     const handleTouchEnd = (event: TouchEvent) => {

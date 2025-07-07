@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 import '../styles.css'
 import { ActionButton as Button } from '@/components/ActionButton'
 import { Label } from '@/components/ui/label'
@@ -13,11 +13,14 @@ export const Route = createFileRoute('/')({
 
 function App() {
   const root = useRef<HTMLDivElement | null>(null)
+  const router = useRouter()
 
-  const { pageIndex } = usePageContext()
+  const { pageTitle, setPageIndex, setPageTitle } = usePageContext()
+
+  setPageIndex(0)
 
   useEffect(() => {
-    if (pageIndex !== 1) {
+    if (pageTitle !== 'Home') {
       animate('.home-container', {
         y: '-50px',
         opacity: 0,
@@ -30,7 +33,13 @@ function App() {
         duration: 1500,
       })
     }
-  }, [pageIndex])
+  }, [pageTitle])
+
+    const handleContactClick = () => {
+        setPageIndex(4);
+        setPageTitle('Contact Me');
+        router.navigate({ to: "/Contact" });
+    }
 
   return (
     <div
@@ -89,7 +98,7 @@ function App() {
             <div className="p-[5px] rounded-lg bg-gradient-to-r from-[#BA68C8] to-[#EE9645] inline-block drop-shadow-md">
               <Button
                 variant="ghost"
-                onClick={() => alert('HI There!')}
+                onClick={handleContactClick}
                 label="Get In Touch"
               />
             </div>

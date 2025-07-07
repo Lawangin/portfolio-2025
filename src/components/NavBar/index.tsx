@@ -95,11 +95,11 @@ const NavBar = ({ className }: INavProps) => {
 
     const pathToIndexMap: Record<string, number> = {
       '/': 1,
-      '/about-1': 1.5,
-      '/about-2': 2,
-      '/projects-1': 2.5,
-      '/projects-2': 3,
-      '/contact': 4,
+      '/About-1': 1.5,
+      '/About-2': 2,
+      '/Projects-1': 2.5,
+      '/Projects-2': 3,
+      '/Contact': 4,
     }
 
     const currentPath = router.state.location.pathname
@@ -188,11 +188,11 @@ const NavBar = ({ className }: INavProps) => {
 
           const pageMap: Record<number, string> = {
             1: '/',
-            1.5: '/about-1',
-            2: '/about-2',
-            2.5: '/projects-1',
-            3: '/projects-2',
-            4: '/contact',
+            1.5: '/About-1',
+            2: '/About-2',
+            2.5: '/Projects-1',
+            3: '/Projects-2',
+            4: '/Contact',
           }
 
           const path = pageMap[actualIndexForPath]
@@ -271,15 +271,15 @@ const NavBar = ({ className }: INavProps) => {
       return current
     }
 
-    const handleWheel = (event: WheelEvent) => {
-      const direction = event.deltaY > 0 ? 'down' : 'up'
+    // const handleWheel = (event: WheelEvent) => {
+    //   const direction = event.deltaY > 0 ? 'down' : 'up'
 
-      const nextIcon = getNextStep(activeIcon, direction)
+    //   const nextIcon = getNextStep(activeIcon, direction)
 
-      if (nextIcon !== activeIcon) {
-        handleClick(nextIcon)
-      }
-    }
+    //   if (nextIcon !== activeIcon) {
+    //     handleClick(nextIcon)
+    //   }
+    // }
 
     const handleTouchStart = (event: TouchEvent) => {
       touchStartY.current = event.touches[0].clientY
