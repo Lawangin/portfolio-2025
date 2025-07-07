@@ -55,9 +55,6 @@ const NavBar = ({ className }: INavProps) => {
   }
 
   const [circleActiveLeft, setCircleActiveLeft] = useState<number>(60)
-
-  console.log('circleActiveLeft start', circleActiveLeft)
-
   const handleClick = (iconIndex: number) => {
     const titleMap: Record<number, string> = {
       1: 'Home',
@@ -105,8 +102,6 @@ const NavBar = ({ className }: INavProps) => {
         'animateActiveBlob',
         (iconIndex, indexSimilar, actualIndexForPath) => {
           const leftValue = circleActiveLeft + (iconIndex - 1) * 70
-          console.log('leftValue', leftValue)
-          console.log('circleActiveLeft', circleActiveLeft)
           const currentActiveLeftValue = getActiveCirclePosition()!
           const scaleYKeyFrames = [1.75, 1.75, 1, 1.75]
           const scaleXKeyFrames = [1.75, 1, 1.75, 1.75]
