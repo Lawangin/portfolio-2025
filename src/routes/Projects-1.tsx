@@ -7,7 +7,7 @@ import { animate } from 'animejs'
 import { usePageContext } from '@/context/PageContext/PageContext'
 import ScrollIndicator from '@/components/ScrollIndicator'
 
-export const Route = createFileRoute('/Projects-1')({
+export const Route = createFileRoute('/projects-1')({
   component: RouteComponent,
 })
 
@@ -29,14 +29,13 @@ function RouteComponent() {
   }
 
   useEffect(() => {
-    if (isDesktop && (pageTitle === 'Projects')) {
+    if (isDesktop && pageTitle === 'Projects') {
       animate('.projects-container', {
         y: ['50px', '0px'],
         opacity: [0, 1],
         duration: 1500,
       })
-    }
-    else if (pageTitle === 'Projects Part 1') {
+    } else if (pageTitle === 'Projects Part 1') {
       animate('.projects-container', {
         y: ['50px', '0px'],
         opacity: [0, 1],
@@ -79,21 +78,26 @@ function RouteComponent() {
           />
         </GlassContainer>
         {isDesktop && (
-          <><GlassContainer className="p-2">
-            <ProjectCard
-              projectTitle={projectData.title}
-              projectDescription={projectData.description}
-              projectImage={projectData.image}
-              icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
-              demoLink={projectData.demoLink}
-              githubLink={projectData.githubLink} />
-          </GlassContainer><GlassContainer className="p-2">
+          <>
+            <GlassContainer className="p-2">
               <ProjectCard
                 projectTitle={projectData.title}
                 projectDescription={projectData.description}
                 projectImage={projectData.image}
-                icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]} />
-            </GlassContainer></>
+                icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
+                demoLink={projectData.demoLink}
+                githubLink={projectData.githubLink}
+              />
+            </GlassContainer>
+            <GlassContainer className="p-2">
+              <ProjectCard
+                projectTitle={projectData.title}
+                projectDescription={projectData.description}
+                projectImage={projectData.image}
+                icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
+              />
+            </GlassContainer>
+          </>
         )}
       </div>
       {!isDesktop && (

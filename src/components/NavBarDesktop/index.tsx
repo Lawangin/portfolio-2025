@@ -24,7 +24,6 @@ const NavBarDesktop = ({ className }: INavProps) => {
   const touchStartY = useRef<number>(0)
   const touchEndY = useRef<number>(0)
 
-
   const getActiveCirclePosition = () => {
     if (circleActiveRef.current) {
       const computedStyle = getComputedStyle(circleActiveRef.current)
@@ -36,7 +35,9 @@ const NavBarDesktop = ({ className }: INavProps) => {
     const indexToUse = targetIndex || pageIndex
 
     // Get the circle element based on the specified index
-    const activeCircleElement = root.current?.querySelector(`.circle-${indexToUse}`) as HTMLElement
+    const activeCircleElement = root.current?.querySelector(
+      `.circle-${indexToUse}`,
+    ) as HTMLElement
 
     if (activeCircleElement) {
       const rect = activeCircleElement.getBoundingClientRect()
@@ -61,10 +62,7 @@ const NavBarDesktop = ({ className }: INavProps) => {
     }
     setActiveIcon(iconIndex)
 
-    scope?.current?.methods.animateActiveBlob(
-      iconIndex,
-      false,
-    )
+    scope?.current?.methods.animateActiveBlob(iconIndex, false)
     scope?.current?.methods.animateActive(`.circle-${iconIndex}`)
 
     // setPageIndex(iconIndex)
@@ -86,7 +84,7 @@ const NavBarDesktop = ({ className }: INavProps) => {
       })
 
       scope.add('animateActiveBlob', (iconIndex, indexSimilar) => {
-        const topValue = 332.5 + (iconIndex - 1) * 70
+        const topValue = circleActiveTop + (iconIndex - 1) * 70
 
         // const topValue = circleActiveTop + (iconIndex - 1) * 70
         const currentActiveTopValue = getActiveCirclePosition()!
@@ -104,9 +102,9 @@ const NavBarDesktop = ({ className }: INavProps) => {
 
         const pageMap: Record<number, string> = {
           1: '/',
-          2: '/About-1',
-          3: '/Projects-1',
-          4: '/Contact',
+          2: '/about-1',
+          3: '/projects-1',
+          4: '/contact',
         }
 
         const path = pageMap[iconIndex]
@@ -163,11 +161,10 @@ const NavBarDesktop = ({ className }: INavProps) => {
 
     const pathToIndexMap: Record<string, number> = {
       '/': 1,
-      '/About-1': 2,
-      '/Projects-1': 3,
-      '/Contact': 4,
+      '/about-1': 2,
+      '/projects-1': 3,
+      '/contact': 4,
     }
-
 
     const currentPath = router.state.location.pathname
     const matchedIndex = pathToIndexMap[currentPath]
@@ -176,7 +173,7 @@ const NavBarDesktop = ({ className }: INavProps) => {
       setActiveIcon(matchedIndex)
 
       // Set the initial position of circle-active after the DOM is mounted
-      const initialTop = getFirstCirclePosition(matchedIndex)
+      const initialTop = getFirstCirclePosition(1)
       setCircleActiveTop(initialTop - 20)
 
       // Set correct page title
@@ -208,7 +205,6 @@ const NavBarDesktop = ({ className }: INavProps) => {
       )
 
       scope.current?.methods.animateActive(`.circle-${matchedIndex}`)
-
     }
     return () => scope?.current?.revert()
   }, [circleActiveTop, pageIndex])

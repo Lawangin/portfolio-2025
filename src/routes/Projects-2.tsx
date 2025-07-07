@@ -6,14 +6,14 @@ import { ProjectCard } from '@/components/ProjectCard'
 import { animate } from 'animejs'
 import { usePageContext } from '@/context/PageContext/PageContext'
 
-export const Route = createFileRoute('/Projects-2')({
+export const Route = createFileRoute('/projects-2')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const root = useRef<HTMLDivElement | null>(null)
 
-  const { pageIndex } = usePageContext()
+  const { pageTitle } = usePageContext()
 
   const projectData = {
     title: 'Travel App',
@@ -27,7 +27,7 @@ function RouteComponent() {
   }
 
   useEffect(() => {
-        if (pageIndex === 3) {
+    if (pageTitle === 'Projects Part 2') {
       animate('.projects-container', {
         y: ['50px', '0px'],
         opacity: [0, 1],
@@ -40,7 +40,7 @@ function RouteComponent() {
         duration: 1500,
       })
     }
-  }, [pageIndex])
+  }, [pageTitle])
 
   return (
     <div className="min-h-screen projects-container">

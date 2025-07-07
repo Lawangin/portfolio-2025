@@ -8,7 +8,7 @@ import { usePageContext } from '@/context/PageContext/PageContext'
 import { SkillsPage } from '@/components/SkillsPage/SkillsPage'
 import ScrollIndicator from '@/components/ScrollIndicator'
 
-export const Route = createFileRoute('/About-1')({
+export const Route = createFileRoute('/about-1')({
   component: RouteComponent,
 })
 
@@ -49,7 +49,7 @@ function RouteComponent() {
   ]
 
   useEffect(() => {
-    if (isDesktop && (pageTitle === 'About Me')) {
+    if (isDesktop && pageTitle === 'About Me') {
       animate('.about-container', {
         y: ['25px', '0px'],
         opacity: [0, 1],
@@ -88,10 +88,7 @@ function RouteComponent() {
                 download="Lawangin_CV.pdf"
                 className="cursor-pointer"
               >
-                <Button
-                  variant="ghost"
-                  label="Download CV"
-                />
+                <Button variant="ghost" label="Download CV" />
               </a>
             </div>
           </div>
@@ -138,7 +135,6 @@ function RouteComponent() {
             <ScrollIndicator label="Sroll to view skills" />
           </div>
         )}
-
       </div>
       <SkillsPage isPageTwo={isDesktop} />
     </div>

@@ -15,9 +15,13 @@ function App() {
   const root = useRef<HTMLDivElement | null>(null)
   const router = useRouter()
 
-  const { pageTitle, setPageIndex, setPageTitle } = usePageContext()
+  const { pageTitle, setPageIndex, setPageTitle, pageIndex } = usePageContext()
 
-  setPageIndex(0)
+  useEffect(() => {
+    if (pageIndex !== 0) {
+      setPageIndex(0)
+    }
+  }, [setPageIndex])
 
   useEffect(() => {
     if (pageTitle !== 'Home') {
@@ -35,11 +39,11 @@ function App() {
     }
   }, [pageTitle])
 
-    const handleContactClick = () => {
-        setPageIndex(4);
-        setPageTitle('Contact Me');
-        router.navigate({ to: "/Contact" });
-    }
+  const handleContactClick = () => {
+    setPageIndex(4)
+    setPageTitle('Contact Me')
+    router.navigate({ to: '/contact' })
+  }
 
   return (
     <div

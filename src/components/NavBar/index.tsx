@@ -18,13 +18,11 @@ const NavBar = ({ className }: INavProps) => {
   const circleStartRef = useRef<HTMLDivElement | null>(null)
 
   const [activeIcon, setActiveIcon] = useState<number>(1)
-  const [circleActiveLeft, setCircleActiveLeft] = useState<number>(0)
-
   // Track touch positions
   const touchStartY = useRef<number>(0)
   const touchEndY = useRef<number>(0)
 
-  const { pageIndex, setPageIndex, setPageTitle } = usePageContext()
+  const { pageIndex, setPageTitle } = usePageContext()
 
   const getActiveCirclePosition = () => {
     if (circleActiveRef.current) {
@@ -33,37 +31,44 @@ const NavBar = ({ className }: INavProps) => {
     }
   }
 
-  const getFirstCirclePosition = () => {
-    if (circleStartRef.current) {
-      const rect = circleStartRef.current.getBoundingClientRect()
+  const getFirstCirclePosition = (targetIndex?: number) => {
+    const indexToUse = targetIndex || pageIndex
+
+    // Get the circle element based on the specified index
+    const activeCircleElement = root.current?.querySelector(
+      `.circle-${indexToUse}`,
+    ) as HTMLElement
+
+    if (activeCircleElement) {
+      const rect = activeCircleElement.getBoundingClientRect()
+      const containerRect = root.current?.getBoundingClientRect()
+
+      if (containerRect) {
+        return rect.left - containerRect.left
+      }
+
       return rect.left
     }
-    return 0
+
+    // Fallback calculation based on the specified index
+    return (indexToUse - 1) * 70
   }
 
+  const [circleActiveLeft, setCircleActiveLeft] = useState<number>(60)
+
+  console.log('circleActiveLeft start', circleActiveLeft)
+
   const handleClick = (iconIndex: number) => {
-    switch (iconIndex) {
-      case 1:
-        setPageTitle('Home')
-        break
-      case 1.5:
-        setPageTitle('About Me Part 1')
-        break
-      case 2:
-        setPageTitle('About Me Part 2')
-        break
-      case 2.5:
-        setPageTitle('Projects Part 1')
-        break
-      case 3:
-        setPageTitle('Projects Part 2')
-        break
-      case 4:
-        setPageTitle('Contact Me')
-        break
-      default:
-        setPageTitle('Home')
+    const titleMap: Record<number, string> = {
+      1: 'Home',
+      1.5: 'About Me Part 1',
+      2: 'About Me Part 2',
+      2.5: 'Projects Part 1',
+      3: 'Projects Part 2',
+      4: 'Contact Me',
     }
+
+    setPageTitle(titleMap[iconIndex] || 'Home')
 
     // Define which icon should get deactivated
     const deactivationTarget =
@@ -78,7 +83,6 @@ const NavBar = ({ className }: INavProps) => {
     }
 
     setActiveIcon(iconIndex)
-    setPageIndex(iconIndex)
 
     scope?.current?.methods.animateActiveBlob(
       visualTarget,
@@ -90,73 +94,6 @@ const NavBar = ({ className }: INavProps) => {
   }
 
   useEffect(() => {
-    const initialLeft = getFirstCirclePosition()
-    setCircleActiveLeft(initialLeft - 20)
-
-    const pathToIndexMap: Record<string, number> = {
-      '/': 1,
-      '/About-1': 1.5,
-      '/About-2': 2,
-      '/Projects-1': 2.5,
-      '/Projects-2': 3,
-      '/Contact': 4,
-    }
-
-    const currentPath = router.state.location.pathname
-    const matchedIndex = pathToIndexMap[currentPath]
-
-    if (matchedIndex) {
-      setActiveIcon(matchedIndex)
-      setPageIndex(matchedIndex)
-
-      switch (matchedIndex) {
-        case 1:
-          setPageTitle('Home')
-          break
-        case 1.5:
-          setPageTitle('About Me Part 1')
-          break
-        case 2:
-          setPageTitle('About Me Part 2')
-          break
-        case 2.5:
-          setPageTitle('Projects Part 1')
-          break
-        case 3:
-          setPageTitle('Projects Part 2')
-          break
-        case 4:
-          setPageTitle('Contact Me')
-          break
-      }
-
-      setTimeout(() => {
-        const visualTarget =
-          matchedIndex === 1.5
-            ? 2
-            : matchedIndex === 2.5
-              ? 3
-              : Math.floor(matchedIndex)
-
-        const prevCircle =
-          matchedIndex === 1.5 ? 1 : matchedIndex === 2.5 ? 2 : null
-
-        if (prevCircle) {
-          scope.current?.methods.animateInactive(`.circle-${prevCircle}`)
-        }
-
-        scope.current?.methods.animateActiveBlob(
-          visualTarget,
-          true,
-          matchedIndex,
-        )
-
-        scope.current?.methods.animateActive(`.circle-${visualTarget}`)
-      }, 50)
-    }
-  }, [])
-
-  useEffect(() => {
     scope.current = createScope({
       root: root as React.RefObject<HTMLElement | SVGElement>,
     }).add((scope) => {
@@ -164,15 +101,12 @@ const NavBar = ({ className }: INavProps) => {
         scale: 1.75,
       })
 
-      animate(`.circle-${Math.floor(pageIndex)}`, {
-        width: '40px',
-        height: '40px',
-      })
-
       scope.add(
         'animateActiveBlob',
         (iconIndex, indexSimilar, actualIndexForPath) => {
           const leftValue = circleActiveLeft + (iconIndex - 1) * 70
+          console.log('leftValue', leftValue)
+          console.log('circleActiveLeft', circleActiveLeft)
           const currentActiveLeftValue = getActiveCirclePosition()!
           const scaleYKeyFrames = [1.75, 1.75, 1, 1.75]
           const scaleXKeyFrames = [1.75, 1, 1.75, 1.75]
@@ -188,11 +122,11 @@ const NavBar = ({ className }: INavProps) => {
 
           const pageMap: Record<number, string> = {
             1: '/',
-            1.5: '/About-1',
-            2: '/About-2',
-            2.5: '/Projects-1',
-            3: '/Projects-2',
-            4: '/Contact',
+            1.5: '/about-1',
+            2: '/about-2',
+            2.5: '/projects-1',
+            3: '/projects-2',
+            4: '/contact',
           }
 
           const path = pageMap[actualIndexForPath]
@@ -251,8 +185,57 @@ const NavBar = ({ className }: INavProps) => {
         })
       })
     })
+
+    const pathToIndexMap: Record<string, number> = {
+      '/': 1,
+      '/about-1': 1.5,
+      '/about-2': 2,
+      '/projects-1': 2.5,
+      '/projects-2': 3,
+      '/contact': 4,
+    }
+
+    const currentPath = router.state.location.pathname
+    const matchedIndex = pathToIndexMap[currentPath]
+
+    if (matchedIndex) {
+      setActiveIcon(matchedIndex)
+
+      const initialLeft = getFirstCirclePosition(1)
+      setCircleActiveLeft(initialLeft - 20)
+
+      const titleMap: Record<number, string> = {
+        1: 'Home',
+        1.5: 'About Me Part 1',
+        2: 'About Me Part 2',
+        2.5: 'Projects Part 1',
+        3: 'Projects Part 2',
+        4: 'Contact Me',
+      }
+
+      setPageTitle(titleMap[matchedIndex] || 'Home')
+
+      const visualTarget =
+        matchedIndex === 1.5
+          ? 2
+          : matchedIndex === 2.5
+            ? 3
+            : Math.floor(matchedIndex)
+
+      const allCircles = [1, 2, 3, 4] // Physical circles that exist in the DOM
+      for (let i of allCircles) {
+        if (i !== visualTarget) {
+          scope.current?.methods.animateInactive(`.circle-${i}`)
+        }
+      }
+
+      scope.current?.methods.animateActiveBlob(visualTarget, true, matchedIndex)
+
+      scope.current?.methods.animateActive(`.circle-${visualTarget}`)
+    }
+
     return () => scope?.current?.revert()
-  }, [circleActiveLeft])
+  }, [circleActiveLeft, pageIndex])
 
   const scrollSteps = [1, 1.5, 2, 2.5, 3, 4]
 

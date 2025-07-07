@@ -11,42 +11,42 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as Projects2Import } from './routes/Projects-2'
-import { Route as Projects1Import } from './routes/Projects-1'
-import { Route as ContactImport } from './routes/Contact'
-import { Route as About2Import } from './routes/About-2'
-import { Route as About1Import } from './routes/About-1'
+import { Route as Projects2Import } from './routes/projects-2'
+import { Route as Projects1Import } from './routes/projects-1'
+import { Route as ContactImport } from './routes/contact'
+import { Route as About2Import } from './routes/about-2'
+import { Route as About1Import } from './routes/about-1'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
 const Projects2Route = Projects2Import.update({
-  id: '/Projects-2',
-  path: '/Projects-2',
+  id: '/projects-2',
+  path: '/projects-2',
   getParentRoute: () => rootRoute,
 } as any)
 
 const Projects1Route = Projects1Import.update({
-  id: '/Projects-1',
-  path: '/Projects-1',
+  id: '/projects-1',
+  path: '/projects-1',
   getParentRoute: () => rootRoute,
 } as any)
 
 const ContactRoute = ContactImport.update({
-  id: '/Contact',
-  path: '/Contact',
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRoute,
 } as any)
 
 const About2Route = About2Import.update({
-  id: '/About-2',
-  path: '/About-2',
+  id: '/about-2',
+  path: '/about-2',
   getParentRoute: () => rootRoute,
 } as any)
 
 const About1Route = About1Import.update({
-  id: '/About-1',
-  path: '/About-1',
+  id: '/about-1',
+  path: '/about-1',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -67,38 +67,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/About-1': {
-      id: '/About-1'
-      path: '/About-1'
-      fullPath: '/About-1'
+    '/about-1': {
+      id: '/about-1'
+      path: '/about-1'
+      fullPath: '/about-1'
       preLoaderRoute: typeof About1Import
       parentRoute: typeof rootRoute
     }
-    '/About-2': {
-      id: '/About-2'
-      path: '/About-2'
-      fullPath: '/About-2'
+    '/about-2': {
+      id: '/about-2'
+      path: '/about-2'
+      fullPath: '/about-2'
       preLoaderRoute: typeof About2Import
       parentRoute: typeof rootRoute
     }
-    '/Contact': {
-      id: '/Contact'
-      path: '/Contact'
-      fullPath: '/Contact'
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
       preLoaderRoute: typeof ContactImport
       parentRoute: typeof rootRoute
     }
-    '/Projects-1': {
-      id: '/Projects-1'
-      path: '/Projects-1'
-      fullPath: '/Projects-1'
+    '/projects-1': {
+      id: '/projects-1'
+      path: '/projects-1'
+      fullPath: '/projects-1'
       preLoaderRoute: typeof Projects1Import
       parentRoute: typeof rootRoute
     }
-    '/Projects-2': {
-      id: '/Projects-2'
-      path: '/Projects-2'
-      fullPath: '/Projects-2'
+    '/projects-2': {
+      id: '/projects-2'
+      path: '/projects-2'
+      fullPath: '/projects-2'
       preLoaderRoute: typeof Projects2Import
       parentRoute: typeof rootRoute
     }
@@ -109,51 +109,51 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/About-1': typeof About1Route
-  '/About-2': typeof About2Route
-  '/Contact': typeof ContactRoute
-  '/Projects-1': typeof Projects1Route
-  '/Projects-2': typeof Projects2Route
+  '/about-1': typeof About1Route
+  '/about-2': typeof About2Route
+  '/contact': typeof ContactRoute
+  '/projects-1': typeof Projects1Route
+  '/projects-2': typeof Projects2Route
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/About-1': typeof About1Route
-  '/About-2': typeof About2Route
-  '/Contact': typeof ContactRoute
-  '/Projects-1': typeof Projects1Route
-  '/Projects-2': typeof Projects2Route
+  '/about-1': typeof About1Route
+  '/about-2': typeof About2Route
+  '/contact': typeof ContactRoute
+  '/projects-1': typeof Projects1Route
+  '/projects-2': typeof Projects2Route
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/About-1': typeof About1Route
-  '/About-2': typeof About2Route
-  '/Contact': typeof ContactRoute
-  '/Projects-1': typeof Projects1Route
-  '/Projects-2': typeof Projects2Route
+  '/about-1': typeof About1Route
+  '/about-2': typeof About2Route
+  '/contact': typeof ContactRoute
+  '/projects-1': typeof Projects1Route
+  '/projects-2': typeof Projects2Route
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/About-1'
-    | '/About-2'
-    | '/Contact'
-    | '/Projects-1'
-    | '/Projects-2'
+    | '/about-1'
+    | '/about-2'
+    | '/contact'
+    | '/projects-1'
+    | '/projects-2'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/About-1' | '/About-2' | '/Contact' | '/Projects-1' | '/Projects-2'
+  to: '/' | '/about-1' | '/about-2' | '/contact' | '/projects-1' | '/projects-2'
   id:
     | '__root__'
     | '/'
-    | '/About-1'
-    | '/About-2'
-    | '/Contact'
-    | '/Projects-1'
-    | '/Projects-2'
+    | '/about-1'
+    | '/about-2'
+    | '/contact'
+    | '/projects-1'
+    | '/projects-2'
   fileRoutesById: FileRoutesById
 }
 
@@ -186,30 +186,30 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/About-1",
-        "/About-2",
-        "/Contact",
-        "/Projects-1",
-        "/Projects-2"
+        "/about-1",
+        "/about-2",
+        "/contact",
+        "/projects-1",
+        "/projects-2"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/About-1": {
-      "filePath": "About-1.tsx"
+    "/about-1": {
+      "filePath": "about-1.tsx"
     },
-    "/About-2": {
-      "filePath": "About-2.tsx"
+    "/about-2": {
+      "filePath": "about-2.tsx"
     },
-    "/Contact": {
-      "filePath": "Contact.tsx"
+    "/contact": {
+      "filePath": "contact.tsx"
     },
-    "/Projects-1": {
-      "filePath": "Projects-1.tsx"
+    "/projects-1": {
+      "filePath": "projects-1.tsx"
     },
-    "/Projects-2": {
-      "filePath": "Projects-2.tsx"
+    "/projects-2": {
+      "filePath": "projects-2.tsx"
     }
   }
 }
