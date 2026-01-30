@@ -7,6 +7,7 @@ import { animate } from 'animejs'
 import { usePageContext } from '@/context/PageContext/PageContext'
 import { SkillsPage } from '@/components/SkillsPage/SkillsPage'
 import ScrollIndicator from '@/components/ScrollIndicator'
+import { ANIMATION_DURATION } from '@/lib/constants'
 
 export const Route = createFileRoute('/about-1')({
   component: RouteComponent,
@@ -53,19 +54,19 @@ function RouteComponent() {
       animate('.about-container', {
         y: ['25px', '0px'],
         opacity: [0, 1],
-        duration: 1500,
+        duration: ANIMATION_DURATION,
       })
     } else if (pageTitle === 'About Me Part 1') {
       animate('.about-container', {
         y: ['25px', '0px'],
         opacity: [0, 1],
-        duration: 1500,
+        duration: ANIMATION_DURATION,
       })
     } else {
       animate('.about-container', {
         y: ['0px', '-25px'],
         opacity: [1, 0],
-        duration: 1500,
+        duration: ANIMATION_DURATION,
       })
     }
   }, [pageTitle])

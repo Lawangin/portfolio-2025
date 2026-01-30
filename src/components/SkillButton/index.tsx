@@ -5,7 +5,7 @@ interface SkillButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   skill: {
     name: string
-    color: string
+    color?: string
   }
 }
 

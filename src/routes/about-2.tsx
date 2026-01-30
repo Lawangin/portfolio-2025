@@ -3,6 +3,7 @@ import { animate, Scope } from 'animejs'
 import { createFileRoute } from '@tanstack/react-router'
 import { usePageContext } from '@/context/PageContext/PageContext'
 import { SkillsPage } from '@/components/SkillsPage/SkillsPage'
+import { ANIMATION_DURATION } from '@/lib/constants'
 
 export const Route = createFileRoute('/about-2')({
   component: RouteComponent,
@@ -17,13 +18,13 @@ function RouteComponent() {
       animate('.about-container', {
         y: ['100px', '0px'],
         opacity: [0, 1],
-        duration: 1500,
+        duration: ANIMATION_DURATION,
       })
     } else {
       animate('.about-container', {
         y: ['0px', '-100px'],
         opacity: [1, 0],
-        duration: 1500,
+        duration: ANIMATION_DURATION,
       })
     }
 

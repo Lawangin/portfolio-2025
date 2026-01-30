@@ -16,6 +16,7 @@ import { z } from 'zod'
 import { IoIosArrowForward, IoIosCheckmarkCircle } from 'react-icons/io'
 import { animate } from 'animejs'
 import { usePageContext } from '@/context/PageContext/PageContext'
+import { ANIMATION_DURATION } from '@/lib/constants'
 
 export const Route = createFileRoute('/contact')({
   component: RouteComponent,
@@ -128,13 +129,13 @@ function RouteComponent() {
       animate('.contact-container', {
         y: ['50px', '0px'],
         opacity: [0, 1],
-        duration: 1500,
+        duration: ANIMATION_DURATION,
       })
     } else {
       animate('.contact-container', {
         y: ['0px', '-50px'],
         opacity: [1, 0],
-        duration: 1500,
+        duration: ANIMATION_DURATION,
       })
     }
   }, [pageTitle])

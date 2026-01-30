@@ -3,6 +3,7 @@ import { animate, createScope, Scope, createSpring, waapi } from 'animejs'
 import { RxHome, RxPerson, RxCode, RxEnvelopeClosed } from 'react-icons/rx'
 import { usePageContext } from '@/context/PageContext/PageContext'
 import { useRouter } from '@tanstack/react-router'
+import { SPRING_STIFFNESS } from '@/lib/constants'
 
 interface INavProps {
   className: string
@@ -110,16 +111,16 @@ const NavBarDesktop = ({ className }: INavProps) => {
         const path = pageMap[iconIndex]
         if (router.state.location.pathname === path && !indexSimilar) return
 
+        // Navigate immediately for faster route transition
+        if (path && router.state.location.pathname !== path) {
+          router.navigate({ to: path, replace: false })
+        }
+
         waapi.animate('.circle-active', {
           top: `${topValue}px`,
           scaleY: scaleY,
           scaleX: scaleX,
-          ease: createSpring({ stiffness: 70 }),
-          onComplete: () => {
-            if (path && router.state.location.pathname !== path) {
-              router.navigate({ to: path, replace: false })
-            }
-          },
+          ease: createSpring({ stiffness: SPRING_STIFFNESS }),
         })
 
         const bubbleLeft = [

@@ -9,6 +9,7 @@ interface ProjectCardProps {
   icons?: IconType[]
   demoLink?: string
   githubLink?: string
+  skills?: { name: string }[]
 }
 
 export const ProjectCard = ({
@@ -18,15 +19,8 @@ export const ProjectCard = ({
   icons,
   demoLink,
   githubLink,
+  skills = [],
 }: ProjectCardProps) => {
-  const skills = [
-    { name: 'React', color: 'bg-[#BA68C8]/60' },
-    { name: 'TypeScript', color: 'bg-[#EE9645]/60' },
-    { name: 'AWS', color: 'bg-[#BA68C8]/60' },
-    { name: 'SQL', color: 'bg-[#EE9645]/60' },
-    { name: 'Grafana', color: 'bg-[#BA68C8]/60' },
-    { name: 'CSS', color: 'bg-[#EE9645]/60' },
-  ]
 
   return (
     <div className="flex flex-col p-4 md:space-y-0">
@@ -66,10 +60,10 @@ export const ProjectCard = ({
 
         <div className="flex gap-2">
           <a href={demoLink} target="_blank" rel="noopener noreferrer">
-            <IoLogoGithub className="w-8 h-8 p-1 rounded-full bg-[#EE9645]/60 flex items-center justify-center text-xs text-white" />
+            <IoIosGlobe className="w-8 h-8 p-1 rounded-full bg-[#BA68C8]/60 flex items-center justify-center text-xs text-white" />
           </a>
           <a href={githubLink} target="_blank" rel="noopener noreferrer">
-            <IoIosGlobe className="w-8 h-8 p-1 rounded-full bg-[#BA68C8]/60 flex items-center justify-center text-xs text-white" />
+            <IoLogoGithub className="w-8 h-8 p-1 rounded-full bg-[#EE9645]/60 flex items-center justify-center text-xs text-white" />
           </a>
         </div>
       </div>

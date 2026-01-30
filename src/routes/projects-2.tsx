@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import GlassContainer from '@/components/GlassContainer'
-import { IoLogoJavascript, IoLogoGithub, IoIosGlobe } from 'react-icons/io'
 import { ProjectCard } from '@/components/ProjectCard'
 import { animate } from 'animejs'
 import { usePageContext } from '@/context/PageContext/PageContext'
+import { ANIMATION_DURATION } from '@/lib/constants'
+import { projectsData } from '@/lib/projectsData'
 
 export const Route = createFileRoute('/projects-2')({
   component: RouteComponent,
@@ -15,29 +16,18 @@ function RouteComponent() {
 
   const { pageTitle } = usePageContext()
 
-  const projectData = {
-    title: 'Travel App',
-    description: `This is a detailed description of the project. It explains the
-        technologies used, challenges overcome, and the overall purpose of the
-        project. The description helps visitors understand what makes this
-        project unique and interesting.`,
-    image: '/LawanginKhanLOGO-01.svg',
-    demoLink: 'https://example.com/demo',
-    githubLink: 'https://github.com/Lawangin/portfolio-2025',
-  }
-
   useEffect(() => {
     if (pageTitle === 'Projects Part 2') {
       animate('.projects-container', {
         y: ['50px', '0px'],
         opacity: [0, 1],
-        duration: 1500,
+        duration: ANIMATION_DURATION,
       })
     } else {
       animate('.projects-container', {
         y: ['0px', '-50px'],
         opacity: [1, 0],
-        duration: 1500,
+        duration: ANIMATION_DURATION,
       })
     }
   }, [pageTitle])
@@ -53,18 +43,24 @@ function RouteComponent() {
       >
         <GlassContainer className="p-2">
           <ProjectCard
-            projectTitle={projectData.title}
-            projectDescription={projectData.description}
-            projectImage={projectData.image}
-            icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
+            projectTitle={projectsData[2].title}
+            projectDescription={projectsData[2].description}
+            projectImage={projectsData[2].image}
+            icons={projectsData[2].icons}
+            demoLink={projectsData[2].demoLink}
+            githubLink={projectsData[2].githubLink}
+            skills={projectsData[2].skills}
           />
         </GlassContainer>
         <GlassContainer className="p-2">
           <ProjectCard
-            projectTitle={projectData.title}
-            projectDescription={projectData.description}
-            projectImage={projectData.image}
-            icons={[IoLogoJavascript, IoLogoGithub, IoIosGlobe]}
+            projectTitle={projectsData[3].title}
+            projectDescription={projectsData[3].description}
+            projectImage={projectsData[3].image}
+            icons={projectsData[3].icons}
+            demoLink={projectsData[3].demoLink}
+            githubLink={projectsData[3].githubLink}
+            skills={projectsData[3].skills}
           />
         </GlassContainer>
       </div>
