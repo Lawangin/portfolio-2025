@@ -141,7 +141,7 @@ function RouteComponent() {
   }, [pageTitle])
 
   return (
-    <div ref={root} className="min-h-screen contact-container">
+    <div ref={root} className="contact-container">
       <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-black bg-clip-text text-transparent opacity-70 px-4 pt-24 md:pl-48 md:py-24 md:text-6xl">
         Contact
       </h1>

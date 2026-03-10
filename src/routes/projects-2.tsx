@@ -33,7 +33,7 @@ function RouteComponent() {
   }, [pageTitle])
 
   return (
-    <div className="min-h-screen projects-container">
+    <div className="projects-container">
       <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-black bg-clip-text text-transparent opacity-70 px-4 pt-24 md:pl-48 md:py-24 md:text-6xl">
         Projects
       </h1>

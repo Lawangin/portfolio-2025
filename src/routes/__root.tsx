@@ -23,9 +23,14 @@ export const Route = createRootRoute({
 
     return (
       <PageProvider>
-        <div>
+        <div className="min-h-screen flex flex-col">
           {isDesktop ? <NavBarDesktop className="nav" /> : <NavBar className="nav" />}
+          <main className="flex-1 flex flex-col">
             <Outlet />
+          </main>
+          <footer className="text-center text-white/50 text-sm py-4">
+            &copy; {new Date().getFullYear()} Lawangin Khan
+          </footer>
         </div>
         <TanStackRouterDevtools />
       </PageProvider>

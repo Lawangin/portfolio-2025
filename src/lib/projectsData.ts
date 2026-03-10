@@ -60,7 +60,7 @@ export const projectsData: Project[] = [
       The project emphasizes practical backend architecture, schema-driven development, and maintainable query patterns.`,
     image: '/LawanginKhanLOGO-01.svg',
     demoLink: '',
-    githubLink: '',
+    githubLink: 'https://github.com/Lawangin/blog-frontend-react',
     icons: [],
     skills: [
       { name: 'GraphQL' },

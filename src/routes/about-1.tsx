@@ -74,24 +74,18 @@ function RouteComponent() {
   return (
     <div
       ref={root}
-      className="grid grid-cols-1 md:grid-cols-2 gap-20 px-4 md:py-0 md:pl-48"
+      className="grid grid-cols-1 md:grid-cols-2 gap-20 px-4 md:py-0 md:pl-48 md:items-center"
     >
-      <div className="p-2 pt-20 md:pt-0 min-h-screen md:place-self-end md:place-content-center max-w-3xl about-container">
+      <div className="p-2 pt-20 md:pt-0 max-w-3xl about-container">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-black bg-clip-text text-transparent opacity-70 py-4 md:text-6xl">
           About me
         </h1>
         <GlassContainer className="p-2">
           <div className="flex gap-2 place-content-between pb-2">
             <p className="text-2xl font-medium py-2">Experience</p>
-            <div className="p-[5px] rounded-lg bg-gradient-to-r from-[#BA68C8] to-[#EE9645] inline-block drop-shadow-md">
-              <a
-                href="/Lawangin_CV.pdf"
-                download="Lawangin_CV.pdf"
-                className="cursor-pointer"
-              >
-                <Button variant="ghost" label="Download CV" />
-              </a>
-            </div>
+            <a href="/Lawangin_CV.pdf" download="Lawangin_CV.pdf">
+              <Button variant="ghost" label="Download CV" gradientBorder />
+            </a>
           </div>
           <hr className="border-t border-white/50" />
           <ExperienceText

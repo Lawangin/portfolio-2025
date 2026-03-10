@@ -48,7 +48,7 @@ function App() {
   return (
     <div
       ref={root}
-      className="min-h-screen md:h-screen px-4 py-12 md:py-0 grid gap-6 md:gap-2 justify-items-center content-center pt-24 md:pt-0 md:pl-48"
+      className="flex-1 px-4 py-12 md:py-0 grid gap-6 md:gap-2 justify-items-center content-center pt-24 md:pt-0 md:pl-48"
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-2 max-w-5xl w-full home-container">
         {/* Box 1: Top Left Metric - Hidden on Mobile */}
@@ -99,13 +99,12 @@ function App() {
           </Label>
 
           <div className="flex justify-center p-2 md:p-4">
-            <div className="p-[5px] rounded-lg bg-gradient-to-r from-[#BA68C8] to-[#EE9645] inline-block drop-shadow-md">
-              <Button
-                variant="ghost"
-                onClick={handleContactClick}
-                label="Get In Touch"
-              />
-            </div>
+            <Button
+              variant="ghost"
+              onClick={handleContactClick}
+              label={<strong>Get In Touch</strong>}
+              gradientBorder
+            />
           </div>
         </GlassContainer>
       </div>
