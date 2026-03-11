@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import emailjs from '@emailjs/browser'
 import {
   Form,
   FormControl,
@@ -26,7 +27,6 @@ function RouteComponent() {
   const [step, setStep] = useState<'name' | 'email' | 'message'>('name')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [showInput, setShowInput] = useState(true)
   const [toastMessage, setToastMessage] = useState('')
 
   const { pageTitle } = usePageContext()
@@ -70,18 +70,21 @@ function RouteComponent() {
       setTimeout(() => {
         setStep('email')
         form.reset({ currentValue: '' })
-      }, 1800)
+      }, 1000)
     } else if (step === 'email') {
       setEmail(values.currentValue)
       animateToast(`We’ll respond to you at ${values.currentValue}!`)
       setTimeout(() => {
         setStep('message')
         form.reset({ currentValue: '' })
-      }, 1800)
+      }, 1000)
     } else if (step === 'message') {
       handleSubmitForm(name, email, values.currentValue)
-      setShowInput(false)
       animateToast(`Message received!`, true)
+      setTimeout(() => {
+        setStep('name')
+        form.reset({ currentValue: '' })
+      }, 1200)
     }
   }
 
@@ -99,8 +102,12 @@ function RouteComponent() {
   }
 
   function handleSubmitForm(name: string, email: string, message: string) {
-    // Replace with your API call
-    console.log('API Call:', { name, email, message })
+    emailjs.send(
+      'service_ipu4lqf',
+      'template_qd9gu26',
+      { from_name: name, reply_to: email, message },
+      { publicKey: 'ZVD0Qh7YxsHNHux5d' },
+    )
   }
 
   function animateToast(message: string, keepVisible = false) {
@@ -118,7 +125,7 @@ function RouteComponent() {
               duration: 300,
               easing: 'easeInOutQuad',
             })
-          }, 1500)
+          }, 800)
         }
       },
     })
@@ -145,8 +152,7 @@ function RouteComponent() {
       <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-black bg-clip-text text-transparent opacity-70 px-4 pt-24 md:pl-48 md:py-24 md:text-6xl">
         Contact
       </h1>
-      {showInput ? (
-        <div className="grid grid-cols-1 gap-6 px-4 py-12 md:place-items-center">
+      <div className="grid grid-cols-1 gap-6 px-4 py-12 md:place-items-center">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleNext)}
@@ -162,7 +168,7 @@ function RouteComponent() {
                       <div className="flex items-center gap-2 relative md:min-w-100">
                         {step === 'message' ? (
                           <textarea
-                            className="text-black min-h-[100px] w-full p-2 border rounded resize-none bg-white"
+                            className="text-black min-h-[180px] w-full p-2 border rounded resize-none bg-white"
                             placeholder="What would you like to say?"
                             {...field}
                           />
@@ -192,10 +198,7 @@ function RouteComponent() {
             </form>
           </Form>
         </div>
-      ) : null}
-      <section
-        className={`px-4 ${step === 'message' ? 'py-12' : 'py-0'} md:place-self-center`}
-      >
+      <section className="px-4 py-4 md:place-self-center">
         <div className="flex place-content-between items-start text-white/80 bg-white/10 p-6 rounded-lg shadow-lg w-full opacity-0 contact-toast">
           <p className="text-lg">{toastMessage}</p>
           <IoIosCheckmarkCircle className="w-8 h-8 text-green-500" />

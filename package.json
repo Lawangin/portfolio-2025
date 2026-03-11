@@ -1,5 +1,7 @@
 {
-  "name": "my-portfolio-2025",
+  "name": "lawangin-khan-portfolio",
+  "description": "Personal portfolio website for Lawangin Khan — Lead Software Engineer",
+  "author": "Lawangin Khan",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,6 +14,7 @@
     "check": "prettier --write . && eslint --fix"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@hookform/resolvers": "^5.1.0",
     "@radix-ui/react-label": "^2.1.3",
     "@radix-ui/react-select": "^2.2.5",

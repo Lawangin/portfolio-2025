@@ -32,7 +32,7 @@ export const Route = createRootRoute({
             &copy; {new Date().getFullYear()} Lawangin Khan
           </footer>
         </div>
-        <TanStackRouterDevtools />
+        {import.meta.env.DEV && <TanStackRouterDevtools />}
       </PageProvider>
     );
   },
