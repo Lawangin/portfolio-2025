@@ -5,10 +5,14 @@ import { RxHome, RxPerson, RxCode, RxEnvelopeClosed } from 'react-icons/rx'
 import { usePageContext } from '@/context/PageContext/PageContext'
 import { useRouter } from '@tanstack/react-router'
 import { SPRING_STIFFNESS } from '@/lib/constants'
-
-interface INavProps {
-  className: string
-}
+import {
+  type INavProps,
+  MOBILE_STEPS,
+  mobilePathToIndexMap,
+  mobilePageMap,
+  mobileTitleMap,
+  getNextStep,
+} from '@/lib/navConfig'
 
 const NavBar = ({ className }: INavProps) => {
   const router = useRouter()
@@ -35,7 +39,6 @@ const NavBar = ({ className }: INavProps) => {
   const getFirstCirclePosition = (targetIndex?: number) => {
     const indexToUse = targetIndex || pageIndex
 
-    // Get the circle element based on the specified index
     const activeCircleElement = root.current?.querySelector(
       `.circle-${indexToUse}`,
     ) as HTMLElement
@@ -51,28 +54,16 @@ const NavBar = ({ className }: INavProps) => {
       return rect.left
     }
 
-    // Fallback calculation based on the specified index
     return (indexToUse - 1) * 70
   }
 
   const [circleActiveLeft, setCircleActiveLeft] = useState<number>(60)
   const handleClick = (iconIndex: number) => {
-    const titleMap: Record<number, string> = {
-      1: 'Home',
-      1.5: 'About Me Part 1',
-      2: 'About Me Part 2',
-      2.5: 'Projects Part 1',
-      3: 'Projects Part 2',
-      4: 'Contact Me',
-    }
+    setPageTitle(mobileTitleMap[iconIndex] || 'Home')
 
-    setPageTitle(titleMap[iconIndex] || 'Home')
-
-    // Define which icon should get deactivated
     const deactivationTarget =
       activeIcon === 1.5 ? 2 : activeIcon === 2.5 ? 3 : Math.floor(activeIcon)
 
-    // Define which icon should be visually activated
     const visualTarget =
       iconIndex === 1.5 ? 2 : iconIndex === 2.5 ? 3 : Math.floor(iconIndex)
 
@@ -116,18 +107,8 @@ const NavBar = ({ className }: INavProps) => {
               ? scaleXKeyFrames
               : scaleXKeyFrames.reverse()
 
-          const pageMap: Record<number, string> = {
-            1: '/',
-            1.5: '/about-1',
-            2: '/about-2',
-            2.5: '/projects-1',
-            3: '/projects-2',
-            4: '/contact',
-          }
+          const path = mobilePageMap[actualIndexForPath]
 
-          const path = pageMap[actualIndexForPath]
-
-          // Navigate immediately for faster route transition
           if (path) {
             router.navigate({ to: path, replace: false })
           }
@@ -182,17 +163,8 @@ const NavBar = ({ className }: INavProps) => {
       })
     })
 
-    const pathToIndexMap: Record<string, number> = {
-      '/': 1,
-      '/about-1': 1.5,
-      '/about-2': 2,
-      '/projects-1': 2.5,
-      '/projects-2': 3,
-      '/contact': 4,
-    }
-
     const currentPath = router.state.location.pathname
-    const matchedIndex = pathToIndexMap[currentPath]
+    const matchedIndex = mobilePathToIndexMap[currentPath]
 
     if (matchedIndex) {
       setActiveIcon(matchedIndex)
@@ -200,16 +172,7 @@ const NavBar = ({ className }: INavProps) => {
       const initialLeft = getFirstCirclePosition(1)
       setCircleActiveLeft(initialLeft - 20)
 
-      const titleMap: Record<number, string> = {
-        1: 'Home',
-        1.5: 'About Me Part 1',
-        2: 'About Me Part 2',
-        2.5: 'Projects Part 1',
-        3: 'Projects Part 2',
-        4: 'Contact Me',
-      }
-
-      setPageTitle(titleMap[matchedIndex] || 'Home')
+      setPageTitle(mobileTitleMap[matchedIndex] || 'Home')
 
       const visualTarget =
         matchedIndex === 1.5
@@ -218,7 +181,7 @@ const NavBar = ({ className }: INavProps) => {
             ? 3
             : Math.floor(matchedIndex)
 
-      const allCircles = [1, 2, 3, 4] // Physical circles that exist in the DOM
+      const allCircles = [1, 2, 3, 4]
       for (let i of allCircles) {
         if (i !== visualTarget) {
           scope.current?.methods.animateInactive(`.circle-${i}`)
@@ -226,40 +189,13 @@ const NavBar = ({ className }: INavProps) => {
       }
 
       scope.current?.methods.animateActiveBlob(visualTarget, true, matchedIndex)
-
       scope.current?.methods.animateActive(`.circle-${visualTarget}`)
     }
 
     return () => scope?.current?.revert()
   }, [circleActiveLeft, pageIndex])
 
-  const scrollSteps = [1, 1.5, 2, 2.5, 3, 4]
-
   useEffect(() => {
-    const getNextStep = (current: number, direction: 'up' | 'down') => {
-      const currentIndex = scrollSteps.indexOf(current)
-      if (currentIndex === -1) return current
-
-      if (direction === 'down' && currentIndex < scrollSteps.length - 1) {
-        return scrollSteps[currentIndex + 1]
-      }
-      if (direction === 'up' && currentIndex > 0) {
-        return scrollSteps[currentIndex - 1]
-      }
-
-      return current
-    }
-
-    // const handleWheel = (event: WheelEvent) => {
-    //   const direction = event.deltaY > 0 ? 'down' : 'up'
-
-    //   const nextIcon = getNextStep(activeIcon, direction)
-
-    //   if (nextIcon !== activeIcon) {
-    //     handleClick(nextIcon)
-    //   }
-    // }
-
     const handleTouchStart = (event: TouchEvent) => {
       touchStartY.current = event.touches[0].clientY
     }
@@ -280,7 +216,7 @@ const NavBar = ({ className }: INavProps) => {
           (direction === 'down' && atBottom) ||
           (direction === 'up' && atTop)
         ) {
-          const nextIcon = getNextStep(activeIcon, direction)
+          const nextIcon = getNextStep(MOBILE_STEPS, activeIcon, direction)
           if (nextIcon !== activeIcon) {
             handleClick(nextIcon)
           }
@@ -298,20 +234,18 @@ const NavBar = ({ className }: INavProps) => {
       }
 
       if (direction) {
-        const nextIcon = getNextStep(activeIcon, direction)
+        const nextIcon = getNextStep(MOBILE_STEPS, activeIcon, direction)
         if (nextIcon !== activeIcon) {
           handleClick(nextIcon)
         }
       }
     }
 
-    // window.addEventListener('wheel', handleWheel, { passive: true });
     window.addEventListener('touchstart', handleTouchStart)
     window.addEventListener('touchend', handleTouchEnd)
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      // window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('touchstart', handleTouchStart)
       window.removeEventListener('touchend', handleTouchEnd)
       window.removeEventListener('keydown', handleKeyDown)

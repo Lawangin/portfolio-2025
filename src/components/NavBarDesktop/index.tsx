@@ -4,10 +4,14 @@ import { RxHome, RxPerson, RxCode, RxEnvelopeClosed } from 'react-icons/rx'
 import { usePageContext } from '@/context/PageContext/PageContext'
 import { useRouter } from '@tanstack/react-router'
 import { SPRING_STIFFNESS } from '@/lib/constants'
-
-interface INavProps {
-  className: string
-}
+import {
+  type INavProps,
+  DESKTOP_STEPS,
+  desktopPathToIndexMap,
+  desktopPageMap,
+  desktopTitleMap,
+  getNextStep,
+} from '@/lib/navConfig'
 
 const NavBarDesktop = ({ className }: INavProps) => {
   const { pageIndex, setPageTitle } = usePageContext()
@@ -35,7 +39,6 @@ const NavBarDesktop = ({ className }: INavProps) => {
   const getFirstCirclePosition = (targetIndex?: number) => {
     const indexToUse = targetIndex || pageIndex
 
-    // Get the circle element based on the specified index
     const activeCircleElement = root.current?.querySelector(
       `.circle-${indexToUse}`,
     ) as HTMLElement
@@ -51,7 +54,6 @@ const NavBarDesktop = ({ className }: INavProps) => {
       return rect.top
     }
 
-    // Fallback calculation based on the specified index
     return (indexToUse - 1) * 70
   }
 
@@ -66,14 +68,7 @@ const NavBarDesktop = ({ className }: INavProps) => {
     scope?.current?.methods.animateActiveBlob(iconIndex, false)
     scope?.current?.methods.animateActive(`.circle-${iconIndex}`)
 
-    // setPageIndex(iconIndex)
-    const titleMap: Record<number, string> = {
-      1: 'Home',
-      2: 'About Me',
-      3: 'Projects',
-      4: 'Contact Me',
-    }
-    setPageTitle(titleMap[iconIndex])
+    setPageTitle(desktopTitleMap[iconIndex])
   }
 
   useEffect(() => {
@@ -87,7 +82,6 @@ const NavBarDesktop = ({ className }: INavProps) => {
       scope.add('animateActiveBlob', (iconIndex, indexSimilar) => {
         const topValue = circleActiveTop + (iconIndex - 1) * 70
 
-        // const topValue = circleActiveTop + (iconIndex - 1) * 70
         const currentActiveTopValue = getActiveCirclePosition()!
         const scaleYKeyFrames = [2, 1, 2, 2]
         const scaleXKeyFrames = [2, 1, 1, 2]
@@ -101,17 +95,9 @@ const NavBarDesktop = ({ className }: INavProps) => {
             ? scaleXKeyFrames
             : scaleXKeyFrames.reverse()
 
-        const pageMap: Record<number, string> = {
-          1: '/',
-          2: '/about-1',
-          3: '/projects-1',
-          4: '/contact',
-        }
-
-        const path = pageMap[iconIndex]
+        const path = desktopPageMap[iconIndex]
         if (router.state.location.pathname === path && !indexSimilar) return
 
-        // Navigate immediately for faster route transition
         if (path && router.state.location.pathname !== path) {
           router.navigate({ to: path, replace: false })
         }
@@ -160,80 +146,37 @@ const NavBarDesktop = ({ className }: INavProps) => {
       })
     })
 
-    const pathToIndexMap: Record<string, number> = {
-      '/': 1,
-      '/about-1': 2,
-      '/projects-1': 3,
-      '/contact': 4,
-    }
-
     const currentPath = router.state.location.pathname
-    const matchedIndex = pathToIndexMap[currentPath]
+    const matchedIndex = desktopPathToIndexMap[currentPath]
 
     if (matchedIndex) {
       setActiveIcon(matchedIndex)
 
-      // Set the initial position of circle-active after the DOM is mounted
       const initialTop = getFirstCirclePosition(1)
       setCircleActiveTop(initialTop - 20)
 
-      // Set correct page title
-      switch (matchedIndex) {
-        case 1:
-          setPageTitle('Home')
-          break
-        case 2:
-          setPageTitle('About Me')
-          break
-        case 3:
-          setPageTitle('Projects')
-          break
-        case 4:
-          setPageTitle('Contact Me')
-          break
-      }
+      setPageTitle(desktopTitleMap[matchedIndex])
 
-      // Reset ALL circles to inactive state first
       for (let i = 1; i <= 4; i++) {
         if (i !== matchedIndex) {
           scope.current?.methods.animateInactive(`.circle-${i}`)
         }
       }
 
-      scope.current?.methods.animateActiveBlob(
-        matchedIndex,
-        true, // indexSimilar
-      )
-
+      scope.current?.methods.animateActiveBlob(matchedIndex, true)
       scope.current?.methods.animateActive(`.circle-${matchedIndex}`)
     }
     return () => scope?.current?.revert()
   }, [circleActiveTop, pageIndex])
 
-  const scrollSteps = [1, 2, 3, 4]
-
   useEffect(() => {
-    const getNextStep = (current: number, direction: 'up' | 'down') => {
-      const currentIndex = scrollSteps.indexOf(current)
-      if (currentIndex === -1) return current
-
-      if (direction === 'down' && currentIndex < scrollSteps.length - 1) {
-        return scrollSteps[currentIndex + 1]
-      }
-      if (direction === 'up' && currentIndex > 0) {
-        return scrollSteps[currentIndex - 1]
-      }
-
-      return current
-    }
-
     const handleTouchEnd = (event: TouchEvent) => {
       touchEndY.current = event.changedTouches[0].clientY
       const distance = touchStartY.current - touchEndY.current
 
       if (Math.abs(distance) > 50) {
         const direction = distance > 0 ? 'down' : 'up'
-        const nextIcon = getNextStep(activeIcon, direction)
+        const nextIcon = getNextStep(DESKTOP_STEPS, activeIcon, direction)
 
         if (nextIcon !== activeIcon) {
           handleClick(nextIcon)
@@ -251,19 +194,17 @@ const NavBarDesktop = ({ className }: INavProps) => {
       }
 
       if (direction) {
-        const nextIcon = getNextStep(activeIcon, direction)
+        const nextIcon = getNextStep(DESKTOP_STEPS, activeIcon, direction)
         if (nextIcon !== activeIcon) {
           handleClick(nextIcon)
         }
       }
     }
 
-    // window.addEventListener('wheel', handleWheel)
     window.addEventListener('touchend', handleTouchEnd)
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      //   window.removeEventListener('wheel', handleWheel)
       window.removeEventListener('touchend', handleTouchEnd)
       window.removeEventListener('keydown', handleKeyDown)
     }

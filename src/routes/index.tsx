@@ -87,15 +87,15 @@ function App() {
               </span>
             </span>
             <span className="block">
-              at{' '}
+              specializing in{' '}
               <span className="bg-gradient-to-r from-[#BA68C8] to-[#EE9645] bg-clip-text text-transparent">
-                ParkMobile.
+                Frontend.
               </span>
             </span>
           </Label>
 
           <Label className="md:justify-center text-white drop-shadow-sm p-2 text-sm md:text-base">
-            Feel free to explore my page and reach out — I'd love to connect!
+            Feel free to explore my page and reach out. I'd love to connect!
           </Label>
 
           <div className="flex justify-center p-2 md:p-4">
