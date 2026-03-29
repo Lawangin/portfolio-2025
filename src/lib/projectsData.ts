@@ -15,9 +15,9 @@ export const projectsData: Project[] = [
     title: 'CLI Deployer',
     description: `A command-line deployment tool built in Go that automates the complete deployment of static websites to AWS. 
     It creates S3 buckets for hosting, provisions CloudFront CDN distributions with SSL/TLS certificates, and configures Route 
-    53 DNS records—all with automatic rollback on failure.`,
-    image: '/LawanginKhanLOGO-01.svg',
-    demoLink: 'https://example.com/demo',
+    53 DNS records, all with automatic rollback on failure.`,
+    image: '/cli-tool.png',
+    demoLink: '',
     githubLink: 'https://github.com/Lawangin/cli-static-web',
     icons: [],
     skills: [
@@ -32,8 +32,8 @@ export const projectsData: Project[] = [
     title: 'Cleaning With Love Website',
     description: `Cleaning with Love is a client-facing web app designed around the connection between mental health and cleaning 
       services. The application includes a custom service estimation system and was deployed using AWS Amplify, with S3 used for asset storage.`,
-    image: '/LawanginKhanLOGO-01.svg',
-    demoLink: '',
+    image: '/cleaning_with_love_mock_up.png',
+    demoLink: 'https://dev.d2olmne5931by.amplifyapp.com/',
     githubLink: 'https://github.com/Lawangin/cleaningwithlove-web/tree/main',
     icons: [],
     skills: [
@@ -58,8 +58,8 @@ export const projectsData: Project[] = [
     title: 'Demo Blogging App',
     description: `A demo blogging app built to demonstrate authentication workflows, data persistence with MongoDB, and GraphQL for efficient querying.
       The project emphasizes practical backend architecture, schema-driven development, and maintainable query patterns.`,
-    image: '/LawanginKhanLOGO-01.svg',
-    demoLink: '',
+    image: '/blogging-app.png',
+    demoLink: 'https://github.com/Lawangin/blog-frontend-react/blob/master/public/Nov-26-2019%20blogging-app.gif',
     githubLink: 'https://github.com/Lawangin/blog-frontend-react',
     icons: [],
     skills: [

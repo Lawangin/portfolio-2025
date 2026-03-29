@@ -58,13 +58,29 @@ export const ProjectCard = ({
           ))}
         </div>
 
-        <div className="flex gap-2">
-          <a href={demoLink} target="_blank" rel="noopener noreferrer">
-            <IoIosGlobe className="w-8 h-8 p-1 rounded-full bg-[#BA68C8]/60 flex items-center justify-center text-xs text-white" />
-          </a>
-          <a href={githubLink} target="_blank" rel="noopener noreferrer">
-            <IoLogoGithub className="w-8 h-8 p-1 rounded-full bg-[#EE9645]/60 flex items-center justify-center text-xs text-white" />
-          </a>
+        <div className="flex gap-3">
+          {demoLink && (
+            <a
+              href={demoLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-white/80 hover:text-white text-sm"
+            >
+              <IoIosGlobe className="w-5 h-5" />
+              Demo
+            </a>
+          )}
+          {githubLink && (
+            <a
+              href={githubLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-white/80 hover:text-white text-sm"
+            >
+              <IoLogoGithub className="w-5 h-5" />
+              GitHub
+            </a>
+          )}
         </div>
       </div>
     </div>
