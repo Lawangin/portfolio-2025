@@ -199,7 +199,7 @@ function RouteComponent() {
           </Form>
         </div>
       <section className="px-4 py-4 md:place-self-center">
-        <div className="flex place-content-between items-start text-white/80 bg-white/10 p-6 rounded-lg shadow-lg w-full opacity-0 contact-toast">
+        <div className="flex place-content-between items-start text-white/80 bg-gray-500/20 border border-white/20 backdrop-blur-lg p-6 rounded-lg shadow-lg w-full opacity-0 contact-toast">
           <p className="text-lg">{toastMessage}</p>
           <IoIosCheckmarkCircle className="w-8 h-8 text-green-500" />
         </div>

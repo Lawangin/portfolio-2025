@@ -127,7 +127,7 @@ function RouteComponent() {
 
         {!isDesktop && (
           <div className="flex justify-center p-4">
-            <ScrollIndicator label="Sroll to view skills" />
+            <ScrollIndicator label="Scroll to view skills" />
           </div>
         )}
       </div>

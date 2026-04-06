@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import '../styles.css'
 import { ActionButton as Button } from '@/components/ActionButton'
 import { Label } from '@/components/ui/label'
 import GlassContainer from '@/components/GlassContainer'
@@ -59,7 +58,7 @@ function App() {
 
         {/* Box 2: Avatar with background ring */}
         <div className="flex py-4 md:py-2 justify-center content-end items-center relative">
-          <div className="absolute w-40 h-40 lg:w-48 lg:h-48 md:w-44 md:h-44 rounded-full bg-white/20 border border-white/30 backdrop-blur-md" />
+          <div className="absolute w-40 h-40 lg:w-48 lg:h-48 md:w-44 md:h-44 rounded-full bg-gray-500/20 border border-white/20 backdrop-blur-md" />
 
           <img
             src="/me.jpg"
@@ -78,7 +77,7 @@ function App() {
       {/* Bottom Row: GlassContainer centered */}
       <div className="mt-10 md:mt-4 w-full px-4 grid justify-center max-w-5xl place-items-start home-container">
         <GlassContainer className="w-full space-y-2 md:space-y-3 md:min-w-xl lg:min-w-3xl">
-          <Label className="text-3xl md:text-4xl lg:text-5xl md:text-center font-bold leading-snug drop-shadow-sm text-white p-2 text-left flex flex-col">
+          <Label className="text-3xl md:text-4xl lg:text-5xl md:text-center font-bold leading-snug drop-shadow-sm text-white py-2 text-left flex flex-col items-start md:items-center">
             <span className="block">Hi, I am Lawangin!</span>
             <span className="block">
               I'm a{' '}
@@ -94,7 +93,7 @@ function App() {
             </span>
           </Label>
 
-          <Label className="md:justify-center text-white drop-shadow-sm p-2 text-sm md:text-base">
+          <Label className="md:justify-center text-white drop-shadow-sm py-2 text-sm md:text-base">
             Feel free to explore my page and reach out. I'd love to connect!
           </Label>
 

@@ -12,6 +12,25 @@ export interface Project {
 
 export const projectsData: Project[] = [
   {
+    title: 'Scrum Poker',
+    description: `A real-time planning poker app for agile teams. Players join a room and vote simultaneously on story points,
+    with results revealed only after everyone has voted. Built with WebSockets for live updates, a Node.js backend hosted on EC2,
+    and a React frontend deployed to S3 via CloudFormation.`,
+    image: '/scrumpoker.lawangin.io_.png',
+    demoLink: 'https://scrumpoker.lawangin.io',
+    githubLink: 'https://github.com/Lawangin/scrum-poker',
+    icons: [],
+    skills: [
+      { name: 'WebSockets' },
+      { name: 'Node.js' },
+      { name: 'React' },
+      { name: 'Rsbuild' },
+      { name: 'AWS EC2' },
+      { name: 'AWS S3' },
+      { name: 'CloudFormation' },
+    ],
+  },
+  {
     title: 'CLI Deployer',
     description: `A command-line deployment tool built in Go that automates the complete deployment of static websites to AWS. 
     It creates S3 buckets for hosting, provisions CloudFront CDN distributions with SSL/TLS certificates, and configures Route 
@@ -54,19 +73,19 @@ export const projectsData: Project[] = [
     icons: [],
     skills: [{ name: 'Vite' }, { name: 'React' }],
   },
-  {
-    title: 'Demo Blogging App',
-    description: `A demo blogging app built to demonstrate authentication workflows, data persistence with MongoDB, and GraphQL for efficient querying.
-      The project emphasizes practical backend architecture, schema-driven development, and maintainable query patterns.`,
-    image: '/blogging-app.png',
-    demoLink: 'https://github.com/Lawangin/blog-frontend-react/blob/master/public/Nov-26-2019%20blogging-app.gif',
-    githubLink: 'https://github.com/Lawangin/blog-frontend-react',
-    icons: [],
-    skills: [
-      { name: 'GraphQL' },
-      { name: 'Node.js' },
-      { name: 'React' },
-      { name: 'MongoDB' },
-    ],
-  },
+  // {
+  //   title: 'Demo Blogging App',
+  //   description: `A demo blogging app built to demonstrate authentication workflows, data persistence with MongoDB, and GraphQL for efficient querying.
+  //     The project emphasizes practical backend architecture, schema-driven development, and maintainable query patterns.`,
+  //   image: '/blogging-app.png',
+  //   demoLink: 'https://github.com/Lawangin/blog-frontend-react/blob/master/public/Nov-26-2019%20blogging-app.gif',
+  //   githubLink: 'https://github.com/Lawangin/blog-frontend-react',
+  //   icons: [],
+  //   skills: [
+  //     { name: 'GraphQL' },
+  //     { name: 'Node.js' },
+  //     { name: 'React' },
+  //     { name: 'MongoDB' },
+  //   ],
+  // },
 ]

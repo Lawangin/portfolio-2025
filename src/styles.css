@@ -12,6 +12,13 @@ body {
   -webkit-font-smoothing: antialiased;
   background-color: var(--color-background);
   color: var(--color-primary);
+  background-image:
+    linear-gradient(rgba(6, 11, 95, 0.3), rgba(6, 11, 95, 0.3)),
+    url('/blob_bkg.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 img,
@@ -53,22 +60,9 @@ h6 {
 }
 
 
-#root,
-#__next {
-  isolation: isolate;
-}
 
 /* CSS RESET FINISHED */
 
-body {
-  background-image:
-    linear-gradient(rgba(6, 11, 95, 0.3), rgba(6, 11, 95, 0.3)),
-    url('/blob_bkg.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-attachment: fixed;
-}
 
 .container {
   display: grid;

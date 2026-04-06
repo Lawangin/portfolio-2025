@@ -84,9 +84,9 @@ export const SkillsPage = ({ isPageTwo }: SkillsPageProps) => {
               relative
               rounded-full 
               border 
-              border-white/30 
-              bg-white/20 
-              backdrop-blur-lg 
+              border-white/20
+              bg-gray-500/20
+              backdrop-blur-lg
               shadow-lg 
               flex 
               items-center 

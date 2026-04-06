@@ -10,7 +10,7 @@ const GlassContainer = ({ className, children }: GlassContainerProps) => {
   return (
     <div
       className={cn(
-        "w-full p-6 rounded-2xl border border-white/30 bg-white/20 backdrop-blur-lg shadow-lg text-white",
+        "w-full p-6 rounded-2xl border border-white/20 bg-gray-500/20 backdrop-blur-lg shadow-lg text-white",
         className
       )}
     >
